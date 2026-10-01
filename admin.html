@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#b8341e">
+<title>پنل مدیریت — ترشک بندری</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Lalezar&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fdf6ec;--card:#fff;--primary:#b8341e;--primary-dark:#8b2415;
+  --mustard:#e8a33d;--text:#2c1810;--soft:#7a6353;--border:#f0e2cf;
+  --success:#4a7c59;--danger:#dc2626;--radius:16px;
+}
+body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;padding-bottom:40px;padding-top:env(safe-area-inset-top);background-image:radial-gradient(circle at 20% 10%,rgba(232,163,61,.08),transparent 40%),radial-gradient(circle at 80% 80%,rgba(184,52,30,.06),transparent 45%)}
+
+/* قفل */
+#gate{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#b8341e,#8b2415);padding:24px}
+.gate-box{background:var(--card);padding:32px 24px;border-radius:22px;width:100%;max-width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.gate-box .lock{font-size:52px;margin-bottom:12px}
+.gate-box h1{font-family:'Lalezar',sans-serif;font-size:24px;color:var(--primary-dark);margin-bottom:6px;font-weight:400}
+.gate-box p{font-size:12px;color:var(--soft);margin-bottom:22px}
+.gate-box input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:15px;text-align:center;background:var(--bg);margin-bottom:12px;outline:none}
+.gate-box input:focus{border-color:var(--primary)}
+.gate-box button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.gate-box .err{color:var(--danger);font-size:12px;margin-top:10px;display:none}
+.gate-box .err.show{display:block}
+
+/* پنل */
+#admin{display:none;max-width:640px;margin:0 auto;padding:16px}
+#admin.show{display:block}
+
+.admin-header{display:flex;align-items:center;gap:12px;padding:16px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:16px;box-shadow:0 4px 16px rgba(184,52,30,.06)}
+.admin-header .logo-icon{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#d44a30,#8b2415);flex-shrink:0}
+.admin-header h2{font-family:'Lalezar',sans-serif;font-size:19px;font-weight:400;color:var(--primary-dark);flex:1}
+.admin-header .count{font-size:11.5px;color:var(--soft);background:var(--bg);padding:4px 10px;border-radius:99px}
+
+.tabs{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:14px;border:1px solid var(--border);margin-bottom:16px}
+.tab-btn{flex:1;padding:10px;background:transparent;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:500;color:var(--soft);cursor:pointer;transition:all .2s}
+.tab-btn.active{background:var(--primary);color:#fff;box-shadow:0 4px 12px -2px rgba(184,52,30,.4)}
+
+.tab{display:none}
+.tab.active{display:block}
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;margin-bottom:14px;box-shadow:0 4px 16px rgba(184,52,30,.04)}
+.section h3{font-family:'Lalezar',sans-serif;font-size:16px;font-weight:400;color:var(--primary-dark);margin-bottom:14px;padding-bottom:10px;border-bottom:1px dashed var(--border);display:flex;align-items:center;gap:8px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:500;color:var(--text);margin-bottom:6px}
+.field label .hint{font-size:10.5px;color:var(--soft);font-weight:400;margin-right:4px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;background:var(--bg);color:var(--text);outline:none;transition:border .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);background:#fff}
+.field textarea{min-height:80px;resize:vertical;line-height:1.7}
+.field .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field .color-row{display:flex;gap:8px;flex-wrap:wrap}
+.color-dot{width:38px;height:38px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .2s;position:relative}
+.color-dot:active{transform:scale(.9)}
+.color-dot.active{border-color:var(--primary-dark);box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--primary)}
+.emoji-row{display:flex;gap:6px;flex-wrap:wrap}
+.emoji-btn{width:42px;height:42px;border-radius:12px;background:var(--bg);border:1.5px solid var(--border);cursor:pointer;font-size:20px;display:grid;place-items:center;transition:all .2s}
+.emoji-btn.active{background:var(--primary);border-color:var(--primary);transform:scale(1.05)}
+.check-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.check-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary);cursor:pointer}
+.check-row label{font-size:13px;color:var(--text);cursor:pointer;font-weight:500}
+
+.actions{display:flex;gap:8px;margin-top:6px}
+.btn{flex:1;padding:13px;border:none;border-radius:12px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 6px 16px -4px rgba(184,52,30,.5)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+.btn-danger{background:#fee2e2;color:var(--danger)}
+.btn-success{background:var(--success);color:#fff;box-shadow:0 6px 16px -4px rgba(74,124,89,.5)}
+
+/* پیش‌نمایش */
+.preview-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-width:200px;box-shadow:0 4px 16px rgba(184,52,30,.06)}
+.preview-img{aspect-ratio:1/1;display:grid;place-items:center;font-size:56px;position:relative}
+.preview-body{padding:12px}
+.preview-name{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.preview-unit{font-size:10.5px;color:var(--soft);margin-bottom:8px}
+.preview-price{font-size:14px;font-weight:700;color:var(--primary-dark)}
+.preview-old{font-size:10.5px;color:var(--soft);text-decoration:line-through;margin-right:6px}
+.preview-badge{position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:99px;font-size:9.5px;font-weight:700;background:var(--mustard);color:var(--primary-dark)}
+
+/* لیست محصولات */
+.product-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:14px;margin-bottom:8px;border:1px solid var(--border)}
+.product-item .pimg{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.product-item .pinfo{flex:1;min-width:0}
+.product-item .pname{font-size:13px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.product-item .pprice{font-size:11px;color:var(--soft)}
+.product-item .pactions{display:flex;gap:4px;flex-shrink:0}
+.pbtn{width:32px;height:32px;border-radius:9px;background:var(--card);border:1px solid var(--border);cursor:pointer;display:grid;place-items:center;color:var(--soft);font-size:14px;transition:all .2s}
+.pbtn:active{transform:scale(.9)}
+.pbtn.edit:hover{color:var(--primary);border-color:var(--primary)}
+.pbtn.del:hover{color:var(--danger);border-color:var(--danger)}
+
+.empty-list{text-align:center;padding:40px 20px;color:var(--soft);font-size:13px}
+
+/* کد نهایی */
+.code-output{background:#1e1e2e;color:#a6e3a1;padding:16px;border-radius:14px;font-family:monospace;font-size:11px;line-height:1.6;direction:ltr;text-align:left;overflow-x:auto;white-space:pre;max-height:400px;overflow-y:auto;margin-bottom:12px;-webkit-user-select:text;user-select:text}
+
+/* توست */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--primary-dark);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:1000;transition:all .3s;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.instructions{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px;margin-bottom:14px}
+.instructions h4{font-size:13px;color:#92400e;margin-bottom:8px;font-weight:600}
+.instructions ol{font-size:12.5px;color:#78350f;line-height:1.9;padding-right:18px}
+.instructions code{background:#fef3c7;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:11.5px;direction:ltr;display:inline-block}
+</style>
+</head>
+<body>
+
+<!-- قفل -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="lock">🔒</div>
+    <h1>پنل مدیریت</h1>
+    <p>ترشک بندری — ورود ادمین</p>
+    <input type="password" id="pw" placeholder="رمز عبور" autocomplete="off">
+    <button id="loginBtn">ورود</button>
+    <div class="err" id="err">رمز اشتباهه</div>
+  </div>
+</div>
+
+<!-- پنل -->
+<div id="admin">
+  <div class="admin-header">
+    <div class="logo-icon">🌶️</div>
+    <h2>پنل مدیریت</h2>
+    <span class="count" id="countLabel">۰ محصول</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="add" id="tabAddBtn">➕ افزودن/ویرایش</button>
+    <button class="tab-btn" data-tab="list" id="tabListBtn">📋 لیست محصولات</button>
+    <button class="tab-btn" data-tab="export" id="tabExportBtn">💾 دریافت کد</button>
+  </div>
+
+  <!-- تب افزودن -->
+  <div class="tab active" id="tab-add">
+    <div class="section">
+      <h3 id="formTitle">🌶️ محصول جدید</h3>
+
+      <div class="field">
+        <label>نام محصول *</label>
+        <input type="text" id="f_name" placeholder="مثلاً: ترشی بندری">
+      </div>
+
+      <div class="field">
+        <label>دسته‌بندی *</label>
+        <select id="f_category">
+          <option value="torshi">🌶️ ترشی</option>
+          <option value="khyarshoor">🥒 خیارشور</option>
+          <option value="lavashak">🍑 لواشک</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>واحد / بسته‌بندی</label>
+        <input type="text" id="f_unit" placeholder="مثلاً: ظرف ۵۰۰ گرمی">
+      </div>
+
+      <div class="field">
+        <label>قیمت (تومان) *</label>
+        <input type="number" id="f_price" placeholder="45000" inputmode="numeric">
+      </div>
+
+      <div class="field">
+        <label>قیمت قبل از تخفیف <span class="hint">(اختیاری)</span></label>
+        <input type="number" id="f_oldPrice" placeholder="60000" inputmode="numeric">
+      </div>
+
+      <div class="field">
+        <label>ایموجی محصول</label>
+        <div class="emoji-row" id="emojiRow"></div>
+      </div>
+
+      <div class="field">
+        <label>رنگ پس‌زمینه</label>
+        <div class="color-row" id="colorRow"></div>
+      </div>
+
+      <div class="field">
+        <label>توضیحات</label>
+        <textarea id="f_description" placeholder="توضیح کوتاه درباره محصول..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>مواد اولیه</label>
+        <input type="text" id="f_ingredients" placeholder="مثلاً: سیر، فلفل، ادویه بندری">
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="f_featured">
+        <label for="f_featured">⭐ پیشنهاد ویژه (نمایش بج)</label>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="f_inStock" checked>
+        <label for="f_inStock">✅ موجود در انبار</label>
+      </div>
+
+      <div class="field">
+        <label>پیش‌نمایش کارت</label>
+        <div class="preview-card" id="previewCard"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="resetFormBtn">🔄 پاک کردن فرم</button>
+        <button class="btn btn-primary" id="saveBtn">💾 ذخیره محصول</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- تب لیست -->
+  <div class="tab" id="tab-list">
+    <div class="section">
+      <h3>📋 محصولات فعلی</h3>
+      <div id="productList"></div>
+    </div>
+  </div>
+
+  <!-- تب خروجی -->
+  <div class="tab" id="tab-export">
+    <div class="section">
+      <h3>💾 دریافت کد نهایی</h3>
+
+      <div class="instructions">
+        <h4>📖 چطور کد رو توی گیت‌هاب بذارم؟</h4>
+        <ol>
+          <li>دکمه <strong>تولید کد</strong> رو بزن</li>
+          <li>دکمه <strong>کپی</strong> رو بزن</li>
+          <li>برو به گیت‌هاب → فایل <code>products.js</code></li>
+          <li>روی آیکون <strong>مداد</strong> (Edit) بزن</li>
+          <li>همه متن قبلی رو پاک کن</li>
+          <li>متن کپی‌شده رو پیست کن</li>
+          <li>پایین صفحه <strong>Commit changes</strong> بزن</li>
+        </ol>
+      </div>
+
+      <div class="actions" style="margin-bottom:12px">
+        <button class="btn btn-success" id="generateBtn">⚡ تولید کد</button>
+        <button class="btn btn-primary" id="copyBtn" style="display:none">📋 کپی</button>
+      </div>
+
+      <div id="codeWrap" style="display:none">
+        <div class="code-output" id="codeOutput"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   رمز عبور — اینجا عوض کن
+   ═══════════════════════════════════════════ */
+const ADMIN_PASSWORD = 'torshak1403';
+
+/* ═══════════════════════════════════════════ */
+const EMOJIS = ['🌶️','🥒','🍑','🍆','🧄','🥗','🟢','🔴','🫙','🍽️','🌰','🍒','🧅','🥕','🍋','🫐'];
+const COLORS = ['#b8341e','#c0392b','#4a7c59','#7ba05b','#6b3a6b','#d4a574','#8b2415','#e8a33d','#6b8e23','#a0522d'];
+
+let products = [];
+let editingIndex = -1;
+let selectedEmoji = '🌶️';
+let selectedColor = '#b8341e';
+
+const $ = id => document.getElementById(id);
+const fa = n => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const formatPrice = n => fa(Number(n).toLocaleString('en-US'));
+
+/* ═══ قفل ═══ */
+$('loginBtn').addEventListener('click', tryLogin);
+$('pw').addEventListener('keypress', e => { if (e.key === 'Enter') tryLogin(); });
+
+function tryLogin(){
+  if ($('pw').value === ADMIN_PASSWORD){
+    $('gate').style.display = 'none';
+    $('admin').classList.add('show');
+    init();
+  } else {
+    $('err').classList.add('show');
+    $('pw').value = '';
+    setTimeout(() => $('err').classList.remove('show'), 2000);
+  }
+}
+
+/* ═══ راه‌اندازی ═══ */
+function init(){
+  // لود محصولات از products.js
+  if (typeof PRODUCTS !== 'undefined'){
+    products = JSON.parse(JSON.stringify(PRODUCTS));
+  }
+
+  renderEmojis();
+  renderColors();
+  renderPreview();
+  renderProductList();
+  updateCount();
+  bindEvents();
+}
+
+/* ═══ تب‌ها ═══ */
+function bindEvents(){
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      $('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  ['f_name','f_unit','f_price','f_oldPrice','f_description'].forEach(id => {
+    $(id).addEventListener('input', renderPreview);
+  });
+
+  $('f_featured').addEventListener('change', renderPreview);
+  $('f_inStock').addEventListener('change', renderPreview);
+
+  $('saveBtn').addEventListener('click', saveProduct);
+  $('resetFormBtn').addEventListener('click', resetForm);
+  $('generateBtn').addEventListener('click', generateCode);
+  $('copyBtn').addEventListener('click', copyCode);
+}
+
+/* ═══ ایموجی و رنگ ═══ */
+function renderEmojis(){
+  const row = $('emojiRow');
+  row.innerHTML = '';
+  EMOJIS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-btn' + (e === selectedEmoji ? ' active' : '');
+    btn.textContent = e;
+    btn.addEventListener('click', () => {
+      selectedEmoji = e;
+      document.querySelectorAll('.emoji-btn').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      renderPreview();
+    });
+    row.appendChild(btn);
+  });
+}
+
+function renderColors(){
+  const row = $('colorRow');
+  row.innerHTML = '';
+  COLORS.forEach(c => {
+    const dot = document.createElement('div');
+    dot.className = 'color-dot' + (c === selectedColor ? ' active' : '');
+    dot.style.background = c;
+    dot.addEventListener('click', () => {
+      selectedColor = c;
+      document.querySelectorAll('.color-dot').forEach(x => x.classList.remove('active'));
+      dot.classList.add('active');
+      renderPreview();
+    });
+    row.appendChild(dot);
+  });
+}
+
+/* ═══ پیش‌نمایش ═══ */
+function renderPreview(){
+  const name = $('f_name').value || 'نام محصول';
+  const unit = $('f_unit').value || 'واحد';
+  const price = $('f_price').value || '0';
+  const oldPrice = $('f_oldPrice').value;
+  const featured = $('f_featured').checked;
+  const inStock = $('f_inStock').checked;
+
+  const hasDiscount = oldPrice && Number(oldPrice) > Number(price);
+
+  $('previewCard').innerHTML = `
+    <div class="preview-img" style="background:linear-gradient(135deg, ${selectedColor}22, ${selectedColor}44)">
+      <span>${selectedEmoji}</span>
+      ${featured ? '<span class="preview-badge">ویژه</span>' : ''}
+      ${!inStock ? '<span class="preview-badge" style="background:#6b6b6b;color:#fff">ناموجود</span>' : ''}
+    </div>
+    <div class="preview-body">
+      <div class="preview-name">${name}</div>
+      <div class="preview-unit">${unit}</div>
+      <div>
+        ${hasDiscount ? `<span class="preview-old">${formatPrice(oldPrice)}</span>` : ''}
+        <span class="preview-price">${formatPrice(price)} تومان</span>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══ ذخیره محصول ═══ */
+function saveProduct(){
+  const name = $('f_name').value.trim();
+  const price = Number($('f_price').value);
+
+  if (!name){ toast('❌ نام محصول رو وارد کن'); return; }
+  if (!price || price <= 0){ toast('❌ قیمت رو وارد کن'); return; }
+
+  const oldPriceVal = $('f_oldPrice').value ? Number($('f_oldPrice').value) : null;
+
+  const product = {
+    id: editingIndex >= 0 ? products[editingIndex].id : generateId(name),
+    name: name,
+    category: $('f_category').value,
+    price: price,
+    oldPrice: oldPriceVal && oldPriceVal > price ? oldPriceVal : null,
+    unit: $('f_unit').value.trim() || '—',
+    emoji: selectedEmoji,
+    color: selectedColor,
+    description: $('f_description').value.trim() || '',
+    ingredients: $('f_ingredients').value.trim() || '',
+    featured: $('f_featured').checked,
+    inStock: $('f_inStock').checked
+  };
+
+  if (editingIndex >= 0){
+    products[editingIndex] = product;
+    toast('✅ محصول ویرایش شد');
+    editingIndex = -1;
+    $('formTitle').textContent = '🌶️ محصول جدید';
+  } else {
+    products.push(product);
+    toast('✅ محصول اضافه شد');
+  }
+
+  resetForm();
+  renderProductList();
+  updateCount();
+
+  // سوییچ به تب لیست
+  setTimeout(() => $('tabListBtn').click(), 400);
+}
+
+function generateId(name){
+  return 'p_' + name.toLowerCase()
+    .replace(/[^a-z0-9آ-ی]/g, '_')
+    .replace(/_+/g, '_')
+    .substring(0, 20) + '_' + Math.random().toString(36).substring(2, 6);
+}
+
+/* ═══ پاک کردن فرم ═══ */
+function resetForm(){
+  $('f_name').value = '';
+  $('f_unit').value = '';
+  $('f_price').value = '';
+  $('f_oldPrice').value = '';
+  $('f_description').value = '';
+  $('f_ingredients').value = '';
+  $('f_featured').checked = false;
+  $('f_inStock').checked = true;
+  $('f_category').selectedIndex = 0;
+  selectedEmoji = '🌶️';
+  selectedColor = '#b8341e';
+  renderEmojis();
+  renderColors();
+  editingIndex = -1;
+  $('formTitle').textContent = '🌶️ محصول جدید';
+  renderPreview();
+}
+
+/* ═══ لیست محصولات ═══ */
+function renderProductList(){
+  const wrap = $('productList');
+
+  if (!products.length){
+    wrap.innerHTML = '<div class="empty-list">هنوز محصولی اضافه نکردی 🌶️</div>';
+    return;
+  }
+
+  wrap.innerHTML = '';
+  products.forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'product-item';
+    item.innerHTML = `
+      <div class="pimg" style="background:linear-gradient(135deg,${p.color}22,${p.color}44)">${p.emoji || '🫙'}</div>
+      <div class="pinfo">
+        <div class="pname">${p.name}</div>
+        <div class="pprice">${formatPrice(p.price)} تومان ${!p.inStock ? '• ناموجود' : ''}</div>
+      </div>
+      <div class="pactions">
+        <button class="pbtn" data-act="up" ${i === 0 ? 'disabled style="opacity:.3"' : ''}>↑</button>
+        <button class="pbtn" data-act="down" ${i === products.length - 1 ? 'disabled style="opacity:.3"' : ''}>↓</button>
+        <button class="pbtn edit" data-act="edit">✏️</button>
+        <button class="pbtn del" data-act="del">🗑️</button>
+      </div>
+    `;
+
+    item.querySelector('[data-act="up"]').addEventListener('click', () => {
+      if (i > 0){
+        [products[i-1], products[i]] = [products[i], products[i-1]];
+        renderProductList();
+      }
+    });
+    item.querySelector('[data-act="down"]').addEventListener('click', () => {
+      if (i < products.length - 1){
+        [products[i], products[i+1]] = [products[i+1], products[i]];
+        renderProductList();
+      }
+    });
+    item.querySelector('[data-act="edit"]').addEventListener('click', () => editProduct(i));
+    item.querySelector('[data-act="del"]').addEventListener('click', () => {
+      if (confirm(`«${p.name}» حذف بشه؟`)){
+        products.splice(i, 1);
+        renderProductList();
+        updateCount();
+        toast('🗑️ حذف شد');
+      }
+    });
+
+    wrap.appendChild(item);
+  });
+}
+
+/* ═══ ویرایش ═══ */
+function editProduct(i){
+  const p = products[i];
+  editingIndex = i;
+
+  $('f_name').value = p.name;
+  $('f_category').value = p.category;
+  $('f_unit').value = p.unit || '';
+  $('f_price').value = p.price;
+  $('f_oldPrice').value = p.oldPrice || '';
+  $('f_description').value = p.description || '';
+  $('f_ingredients').value = p.ingredients || '';
+  $('f_featured').checked = p.featured || false;
+  $('f_inStock').checked = p.inStock !== false;
+
+  selectedEmoji = p.emoji || '🌶️';
+  selectedColor = p.color || '#b8341e';
+  renderEmojis();
+  renderColors();
+  renderPreview();
+
+  $('formTitle').textContent = '✏️ ویرایش: ' + p.name;
+  $('tabAddBtn').click();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* ═══ تعداد ═══ */
+function updateCount(){
+  $('countLabel').textContent = fa(products.length) + ' محصول';
+}
+
+/* ═══ تولید کد ═══ */
+function generateCode(){
+  let code = '';
+  code += '/* ═══════════════════════════════════════════\n';
+  code += '   اطلاعات فروشگاه\n';
+  code += '   ═══════════════════════════════════════════ */\n\n';
+  code += 'const SHOP = {\n';
+  code += `  name: '${SHOP.name}',\n`;
+  code += `  tagline: '${SHOP.tagline}',\n`;
+  code += `  whatsapp: '${SHOP.whatsapp}',\n`;
+  code += `  instagram: '${SHOP.instagram}',\n`;
+  code += `  address: '${SHOP.address}',\n`;
+  code += '};\n\n';
+
+  code += 'const CATEGORIES = [\n';
+  CATEGORIES.forEach(c => {
+    code += `  { id: '${c.id}', name: '${c.name}', emoji: '${c.emoji}' },\n`;
+  });
+  code += '];\n\n';
+
+  code += 'const PRODUCTS = [\n';
+  products.forEach(p => {
+    code += '  {\n';
+    code += `    id: '${p.id}',\n`;
+    code += `    name: '${p.name}',\n`;
+    code += `    category: '${p.category}',\n`;
+    code += `    price: ${p.price},\n`;
+    if (p.oldPrice) code += `    oldPrice: ${p.oldPrice},\n`;
+    code += `    unit: '${p.unit}',\n`;
+    code += `    emoji: '${p.emoji}',\n`;
+    code += `    color: '${p.color}',\n`;
+    code += `    description: '${p.description.replace(/'/g, "\\'")}',\n`;
+    code += `    ingredients: '${p.ingredients.replace(/'/g, "\\'")}',\n`;
+    code += `    featured: ${p.featured},\n`;
+    code += `    inStock: ${p.inStock},\n`;
+    code += '  },\n';
+  });
+  code += '];\n';
+
+  $('codeOutput').textContent = code;
+  $('codeWrap').style.display = 'block';
+  $('copyBtn').style.display = 'flex';
+  toast('✅ کد آماده شد');
+}
+
+/* ═══ کپی ═══ */
+function copyCode(){
+  const text = $('codeOutput').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    toast('📋 کپی شد!');
+  }).catch(() => {
+    // فالبک: انتخاب متن
+    const range = document.createRange();
+    range.selectNode($('codeOutput'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    toast('متن انتخاب شد — Ctrl+C بزن');
+  });
+}
+
+/* ═══ توست ═══ */
+let toastTimer;
+function toast(text){
+  const t = $('toast');
+  t.textContent = text;
+  t.classList.remove('show');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+    });
+  });
+}
+</script>
+<script src="products.js"></script>
+</body>
+</html>
