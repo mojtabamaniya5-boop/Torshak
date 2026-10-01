@@ -41,6 +41,7 @@ function init(){
 
   renderCategories();
   renderProducts();
+  renderDrawerCats();
   updateCartBadge();
 
   /* ── منوی پایین ── */
@@ -48,15 +49,16 @@ function init(){
     window.scrollTo({top: 0, behavior: 'smooth'});
   });
   $('navCart').addEventListener('click', openCart);
-  $('navWhatsapp').addEventListener('click', () => {
-    if (!SHOP.whatsapp) return;
-    const msg = encodeURIComponent('سلام، از اپ ترشک بندری مزاحم شدم 🌶️');
-    window.open(`https://wa.me/${SHOP.whatsapp}?text=${msg}`, '_blank');
-  });
-  $('navInstagram').addEventListener('click', () => {
-    if (!SHOP.instagram) return;
-    window.open(`https://instagram.com/${SHOP.instagram}`, '_blank');
-  });
+  $('navWhatsapp').addEventListener('click', contactWhatsapp);
+  $('navInstagram').addEventListener('click', contactInstagram);
+
+  /* ── Drawer ── */
+  $('hamburgerBtn').addEventListener('click', openDrawer);
+  $('closeDrawer').addEventListener('click', closeDrawer);
+  $('drawerOverlay').addEventListener('click', closeDrawer);
+  $('drawerWhatsapp').addEventListener('click', () => { closeDrawer(); contactWhatsapp(); });
+  $('drawerInstagram').addEventListener('click', () => { closeDrawer(); contactInstagram(); });
+  $('drawerPhone').addEventListener('click', () => { closeDrawer(); contactPhone(); });
 
   /* ── سبد و شیت ── */
   $('closeCart').addEventListener('click', closeCart);
@@ -76,7 +78,49 @@ function init(){
   }
 }
 
-/* ═══════════ دسته‌بندی‌ها ═══════════ */
+/* ═══════════ Drawer ═══════════ */
+const drawer = $('drawer');
+const drawerOverlay = $('drawerOverlay');
+
+function openDrawer(){
+  drawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer(){
+  drawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ═══════════ تماس ═══════════ */
+function contactWhatsapp(){
+  if (!SHOP.whatsapp) return;
+  const msg = encodeURIComponent('سلام، از اپ ترشک بندری مزاحم شدم 🌶️');
+  window.open(`https://wa.me/${SHOP.whatsapp}?text=${msg}`, '_blank');
+}
+function contactInstagram(){
+  if (!SHOP.instagram) return;
+  window.open(`https://instagram.com/${SHOP.instagram}`, '_blank');
+}
+function contactPhone(){
+  if (!SHOP.whatsapp) return;
+  const phone = SHOP.whatsapp.replace(/^98/, '0');
+  window.location.href = `tel:${phone}`;
+}
+
+/* ═══════════ دسته‌بندی ═══════════ */
+function setCategory(id){
+  currentCategory = id;
+  document.querySelectorAll('.cat-pill').forEach(x => {
+    x.classList.toggle('active', x.dataset.cat === id);
+  });
+  document.querySelectorAll('.drawer-cat').forEach(x => {
+    x.classList.toggle('active', x.dataset.cat === id);
+  });
+  renderProducts();
+}
+
 function renderCategories(){
   const wrap = $('categories');
   wrap.innerHTML = '';
@@ -85,11 +129,25 @@ function renderCategories(){
     btn.className = 'cat-pill' + (c.id === 'all' ? ' active' : '');
     btn.dataset.cat = c.id;
     btn.innerHTML = `<span>${c.emoji}</span><span>${c.name}</span>`;
+    btn.addEventListener('click', () => setCategory(c.id));
+    wrap.appendChild(btn);
+  });
+}
+
+function renderDrawerCats(){
+  const wrap = $('drawerCats');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'drawer-cat' + (c.id === currentCategory ? ' active' : '');
+    btn.dataset.cat = c.id;
+    btn.innerHTML = `<span class="drawer-cat-emoji">${c.emoji}</span><span>${c.name}</span>`;
     btn.addEventListener('click', () => {
-      currentCategory = c.id;
-      document.querySelectorAll('.cat-pill').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      renderProducts();
+      setCategory(c.id);
+      closeDrawer();
+      setTimeout(() => {
+        $('products').scrollIntoView({behavior:'smooth', block:'start'});
+      }, 350);
     });
     wrap.appendChild(btn);
   });
@@ -379,9 +437,17 @@ let toastTimer;
 function showToast(text, icon = '✓'){
   const t = $('toast');
   t.innerHTML = `<span class="toast-icon">${icon}</span><span>${text}</span>`;
-  t.classList.add('show');
+  // پاک‌سازی تایمر قبلی
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+  // حذف کلاس قبلی برای ری‌استارت انیمیشن
+  t.classList.remove('show');
+  // استفاده از requestAnimationFrame برای اعمال دوباره
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      t.classList.add('show');
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  });
 }
 
 /* ═══════════ انیمیشن دکمه ═══════════ */
