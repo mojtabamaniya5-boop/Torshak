@@ -30,9 +30,8 @@ function cartTotal(){
   return t;
 }
 
-/* ═══════════ راه‌اندازی اولیه ═══════════ */
+/* ═══════════ راه‌اندازی ═══════════ */
 function init(){
-  // اطلاعات فروشگاه
   $('headerTagline').textContent = SHOP.tagline;
   $('shopAddress').textContent = SHOP.address || '—';
   if (SHOP.whatsapp){
@@ -40,14 +39,26 @@ function init(){
     $('shopPhoneDisplay').textContent = fa(p.replace(/(\d{4})(\d{3})(\d{4})/, '$1 $2 $3'));
   }
 
-  // دسته‌بندی‌ها
   renderCategories();
-
-  // محصولات
   renderProducts();
+  updateCartBadge();
 
-  // رویدادها
-  $('openCart').addEventListener('click', openCart);
+  /* ── منوی پایین ── */
+  $('navHome').addEventListener('click', () => {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+  $('navCart').addEventListener('click', openCart);
+  $('navWhatsapp').addEventListener('click', () => {
+    if (!SHOP.whatsapp) return;
+    const msg = encodeURIComponent('سلام، از اپ ترشک بندری مزاحم شدم 🌶️');
+    window.open(`https://wa.me/${SHOP.whatsapp}?text=${msg}`, '_blank');
+  });
+  $('navInstagram').addEventListener('click', () => {
+    if (!SHOP.instagram) return;
+    window.open(`https://instagram.com/${SHOP.instagram}`, '_blank');
+  });
+
+  /* ── سبد و شیت ── */
   $('closeCart').addEventListener('click', closeCart);
   $('cartSheet').addEventListener('click', e => {
     if (e.target.id === 'cartSheet') closeCart();
@@ -57,9 +68,7 @@ function init(){
   });
   $('checkoutBtn').addEventListener('click', checkoutWhatsApp);
 
-  updateCartBadge();
-
-  // Service Worker
+  /* ── Service Worker ── */
   if ('serviceWorker' in navigator){
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -220,7 +229,6 @@ function openProduct(id){
     </div>
   `;
 
-  // رویدادها
   if (!out){
     $('qtyMinus').addEventListener('click', () => {
       if (currentQty > 1){ currentQty--; updateQtyUI(); }
@@ -259,10 +267,13 @@ function addToCart(id, qty){
 
 function updateCartBadge(){
   const count = cartCount();
-  const badge = $('cartBadge');
+  const badge = $('navBadge');
+  const nav = $('navCart');
   if (count > 0){
     badge.textContent = fa(count);
     badge.classList.add('show');
+    nav.classList.add('active');
+    setTimeout(() => nav.classList.remove('active'), 600);
   } else {
     badge.classList.remove('show');
   }
@@ -390,12 +401,3 @@ document.addEventListener('click', e => {
   const target = document.querySelector(link.getAttribute('href'));
   if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
 });
-/* هدر موقع اسکرول سایه می‌گیره */
-const headerEl = document.querySelector('.app-header');
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  if (y > 10) headerEl.classList.add('scrolled');
-  else headerEl.classList.remove('scrolled');
-}, { passive: true });
-
