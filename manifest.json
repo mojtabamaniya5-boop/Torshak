@@ -1,0 +1,15 @@
+{
+  "name": "ترشک بندری — ترشی و ترشک خانگی",
+  "short_name": "ترشک بندری",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fdf6ec",
+  "theme_color": "#b8341e",
+  "orientation": "portrait",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
