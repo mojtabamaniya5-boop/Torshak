@@ -27,7 +27,7 @@ const PRODUCTS = [
     unit: 'ظرف ۵۰۰ گرمی',
     emoji: '🌶️',
     color: '#b8341e',
-    image: 'images/img-mupzap5t-pysbg.jpg',
+    image: 'images/img-mupzd5e8-1o3lp.jpg',
     description: 'ترشی اصیل بندری با ادویه‌های مخصوص و سیر تازه. طعم تند و خوش‌عطر که یادآور سفره‌های جنوبیه.',
     ingredients: 'سیر، فلفل، ادویه بندری، سرکه طبیعی',
     featured: true,
