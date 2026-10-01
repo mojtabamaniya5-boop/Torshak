@@ -390,3 +390,12 @@ document.addEventListener('click', e => {
   const target = document.querySelector(link.getAttribute('href'));
   if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
 });
+/* هدر موقع اسکرول سایه می‌گیره */
+const headerEl = document.querySelector('.app-header');
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 10) headerEl.classList.add('scrolled');
+  else headerEl.classList.remove('scrolled');
+}, { passive: true });
+
