@@ -51,7 +51,7 @@ body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var
 .row-item .info{flex:1;min-width:0}
 .row-item .name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row-item .sub{font-size:11px;color:var(--soft);margin-top:2px}
-.row-item .thumb{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;font-size:22px;overflow:hidden;background:#f7ead8}
+.row-item .thumb{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;font-size:22px;overflow:hidden;background:#f7ead8;position:relative}
 .row-item .thumb img{width:100%;height:100%;object-fit:cover}
 
 .btn{border:0;border-radius:10px;padding:9px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
@@ -60,6 +60,7 @@ body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var
 .btn.danger{background:#fdecec;color:var(--danger)}
 .btn.big{width:100%;padding:14px;font-size:14px;border-radius:13px}
 .btn.out{background:#f3f3f3;color:#666;text-decoration:line-through}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 
 form .f{margin-bottom:12px}
 form label{display:block;font-size:12px;font-weight:500;margin-bottom:5px}
@@ -72,9 +73,66 @@ form input[dir=ltr]{text-align:left}
 .check input{width:auto}
 
 .note{font-size:11.5px;color:var(--soft);background:#fff8ec;border:1px dashed var(--mustard);border-radius:12px;padding:10px 14px;line-height:1.9;margin-bottom:12px}
-#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--primary-dark);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;z-index:500;transition:.3s}
+.note.ok{background:#e8f5e9;border-color:#a5d6a7;color:#2e7d32}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--primary-dark);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;z-index:500;transition:.3s;max-width:calc(100vw - 40px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.success{background:#16a34a}
+#toast.error{background:#dc2626}
 .hidden{display:none!important}
+
+/* کادر عکس */
+.photo-box{
+  position:relative;
+  width:100%;
+  max-width:240px;
+  aspect-ratio:1/1;
+  margin:0 auto;
+  border-radius:18px;
+  border:2px dashed var(--border);
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  overflow:hidden;
+  transition:all .25s;
+}
+.photo-box:active{transform:scale(.97)}
+.photo-box:hover{border-color:var(--primary);background:#fff}
+.photo-box.has-image{border-style:solid;border-color:var(--border);background:#fff}
+.photo-box .icon{font-size:40px;opacity:.6}
+.photo-box .label{font-size:12.5px;color:var(--soft);text-align:center;line-height:1.6}
+.photo-box .label strong{display:block;font-size:13.5px;color:var(--primary-dark);margin-bottom:4px}
+.photo-box img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.photo-remove{
+  position:absolute;top:8px;left:8px;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(220,38,38,.95);color:#fff;
+  border:none;cursor:pointer;
+  display:grid;place-items:center;
+  z-index:2;font-size:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+.photo-remove:active{transform:scale(.9)}
+.photo-status{
+  position:absolute;bottom:8px;right:8px;
+  padding:4px 10px;border-radius:99px;
+  font-size:10.5px;font-weight:600;
+  background:rgba(74,124,89,.95);color:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+.photo-hint{font-size:11px;color:var(--soft);text-align:center;margin-top:8px;line-height:1.6}
+
+/* Progress overlay */
+.progress-overlay{position:fixed;inset:0;z-index:1001;background:rgba(44,24,16,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
+.progress-overlay.show{display:flex}
+.progress-box{background:var(--card);padding:28px 24px;border-radius:20px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.progress-spinner{width:56px;height:56px;border-radius:50%;border:4px solid var(--border);border-top-color:var(--primary);margin:0 auto 16px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress-title{font-family:'Lalezar',sans-serif;font-size:16px;color:var(--primary-dark);margin-bottom:8px;font-weight:400}
+.progress-text{font-size:12.5px;color:var(--soft);line-height:1.7}
 </style>
 </head>
 <body>
@@ -84,7 +142,7 @@ form input[dir=ltr]{text-align:left}
   <div class="gate-box">
     <div class="lock">🔐</div>
     <h1>پنل مدیریت ترشک بندری</h1>
-    <p>رمز عبور را وارد کنید.<br>رمز پیش‌فرض: <b>1234</b> (بعداً از بخش تنظیمات تغییرش دهید)</p>
+    <p>رمز عبور را وارد کنید.<br>رمز پیش‌فرض: <b>1234</b></p>
     <div class="field">
       <label>رمز عبور</label>
       <input type="password" id="gatePass" dir="ltr" placeholder="••••" autocomplete="current-password">
@@ -102,17 +160,16 @@ form input[dir=ltr]{text-align:left}
     <a href="./">مشاهده سایت ↗</a>
   </div>
 
-  <div class="note">
-    ⚠️ تغییرات این پنل در <b>همین مرورگر</b> ذخیره می‌شود و بلافاصله در سایت اعمال می‌شود.
-    برای اینکه برای <b>همه‌ی مشتری‌ها</b> اعمال شود، بعد از تغییرات به تب «خروجی» بروید،
-    فایل products.js جدید را کپی و در گیت‌هاب جایگزین کنید.
+  <div class="note" id="githubNote">
+    ⚙️ برای آپلود خودکار عکس و به‌روزرسانی سایت، به تب <b>تنظیمات</b> برو و اطلاعات گیت‌هاب را وارد کن.
   </div>
 
   <div class="tabs">
     <button class="tab active" data-tab="products">🫙 محصولات</button>
     <button class="tab" data-tab="cats">🏷️ دسته‌بندی‌ها</button>
-    <button class="tab" data-tab="shop">⚙️ تنظیمات فروشگاه</button>
-    <button class="tab" data-tab="export">📤 خروجی</button>
+    <button class="tab" data-tab="shop">🏪 فروشگاه</button>
+    <button class="tab" data-tab="github">⚙️ گیت‌هاب</button>
+    <button class="tab" data-tab="export">📤 خروجی دستی</button>
   </div>
 
   <!-- محصولات -->
@@ -133,15 +190,29 @@ form input[dir=ltr]{text-align:left}
         </div>
         <div class="grid2">
           <div class="f"><label>برچسب (پرفروش، جدید…)</label><input id="pBadge"></div>
-          <div class="f"><label>ایموجی</label><input id="pEmoji" dir="ltr" placeholder="🌶️"></div>
+          <div class="f"><label>ایموجی (اگر عکس نداری)</label><input id="pEmoji" dir="ltr" placeholder="🌶️"></div>
         </div>
-        <div class="f"><label>مسیر عکس (مثل images/product.jpg) — خالی = ایموجی</label><input id="pImg" dir="ltr"></div>
+
+        <!-- عکس محصول -->
+        <div class="f">
+          <label>📸 عکس محصول</label>
+          <div class="photo-box" id="photoBox">
+            <div class="icon">📷</div>
+            <div class="label">
+              <strong>افزودن عکس</strong>
+              از دوربین یا گالری
+            </div>
+          </div>
+          <input type="file" id="photoInput" accept="image/*" style="display:none">
+          <div class="photo-hint">💡 عکس خودکار فشرده و آپلود می‌شود</div>
+        </div>
+
         <div class="f"><label>رنگ پس‌زمینه (کد HEX)</label><input id="pColor" dir="ltr" placeholder="#e8a33d"></div>
         <div class="f"><label>توضیح</label><textarea id="pDesc"></textarea></div>
         <div class="f"><label>مواد تشکیل‌دهنده</label><input id="pIngredients"></div>
         <div class="f check"><input type="checkbox" id="pStock" checked><label for="pStock" style="margin:0">موجود است</label></div>
         <div style="display:flex;gap:8px;margin-top:6px">
-          <button type="submit" class="btn primary" style="flex:1">💾 ذخیره</button>
+          <button type="submit" class="btn primary" style="flex:1" id="saveProductBtn">💾 ذخیره و آپلود</button>
           <button type="button" class="btn ghost" id="cancelProductForm">انصراف</button>
         </div>
       </form>
@@ -186,19 +257,41 @@ form input[dir=ltr]{text-align:left}
         <button type="submit" class="btn ghost big">🔐 تغییر رمز</button>
       </form>
     </div>
+  </div>
+
+  <!-- گیت‌هاب -->
+  <div id="tab-github" class="hidden">
     <div class="card">
-      <h3>بازنشانی</h3>
-      <p style="font-size:12px;color:var(--soft);margin-bottom:10px;line-height:1.8">بازگرداندن داده‌ها به حالت پیش‌فرض فایل products.js (تغییرات این مرورگر پاک می‌شود).</p>
-      <button class="btn danger big" id="resetBtn">🗑️ بازنشانی به پیش‌فرض</button>
+      <h3>🔗 اتصال به گیت‌هاب</h3>
+      <div class="note">
+        برای اینکه عکس‌ها خودکار آپلود شوند و سایت به‌روز شود، این اطلاعات را وارد کن.
+        این اطلاعات فقط روی همین گوشی ذخیره می‌شود.
+      </div>
+      <form id="githubForm">
+        <div class="f"><label>نام کاربری گیت‌هاب *</label><input id="ghOwner" dir="ltr" placeholder="mojtabamaniya5-boop"></div>
+        <div class="f"><label>نام مخزن *</label><input id="ghRepo" dir="ltr" placeholder="Torshak"></div>
+        <div class="f"><label>توکن گیت‌هاب *</label><input id="ghToken" type="password" dir="ltr" placeholder="github_pat_..."></div>
+        <button type="submit" class="btn primary big">💾 ذخیره اطلاعات</button>
+      </form>
+      <div id="githubStatus" style="margin-top:12px"></div>
+      <button class="btn ghost big" id="testGithubBtn" style="margin-top:8px">🧪 تست اتصال</button>
+      <button class="btn danger big" id="clearGithubBtn" style="margin-top:8px">🗑️ پاک کردن اطلاعات</button>
+    </div>
+    <div class="card">
+      <h3>📤 آپلود دستی فایل‌ها</h3>
+      <p style="font-size:12px;color:var(--soft);line-height:1.8;margin-bottom:10px">
+        اگر خواستی کل فایل products.js را به‌صورت دستی به گیت‌هاب بفرستی.
+      </p>
+      <button class="btn primary big" id="pushAllBtn">🚀 ارسال همه تغییرات به گیت‌هاب</button>
     </div>
   </div>
 
-  <!-- خروجی -->
+  <!-- خروجی دستی -->
   <div id="tab-export" class="hidden">
     <div class="card">
       <h3>فایل products.js جدید</h3>
       <p style="font-size:12px;color:var(--soft);margin-bottom:10px;line-height:1.8">
-        این متن را کپی کنید و در گیت‌هاب، محتوای فایل <b>products.js</b> را با آن جایگزین کنید تا تغییرات برای همه اعمال شود.
+        این متن را کپی کنید و در گیت‌هاب، محتوای فایل <b>products.js</b> را با آن جایگزین کنید.
       </p>
       <textarea id="exportArea" dir="ltr" style="width:100%;min-height:220px;font-family:monospace;font-size:11px;padding:10px;border:1.5px solid var(--border);border-radius:11px;background:#fafafa"></textarea>
       <button class="btn primary big" id="copyExport" style="margin-top:10px">📋 کپی خروجی</button>
@@ -208,15 +301,33 @@ form input[dir=ltr]{text-align:left}
 
 <div id="toast"></div>
 
+<!-- Progress overlay -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-box">
+    <div class="progress-spinner"></div>
+    <div class="progress-title" id="progressTitle">در حال انجام...</div>
+    <div class="progress-text" id="progressText">لطفاً صبر کن</div>
+  </div>
+</div>
+
 <script>
 /* ═══════════ ابزار ═══════════ */
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let toastTimer = null;
-function toast(msg){
-  const t = $('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+function toast(msg, type){
+  const t = $('toast'); t.textContent = msg;
+  t.className = type ? type : '';
+  t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+/* ═══════════ تنظیمات گیت‌هاب ═══════════ */
+let GH = {
+  owner: localStorage.getItem('torshak.gh.owner') || '',
+  repo: localStorage.getItem('torshak.gh.repo') || 'Torshak',
+  token: localStorage.getItem('torshak.gh.token') || ''
+};
 
 /* ═══════════ داده ═══════════ */
 let data = null;
@@ -236,6 +347,11 @@ function load(){
 function save(){
   localStorage.setItem('torshak_data', JSON.stringify(data));
 }
+
+/* ═══════════ متغیر عکس ═══════════ */
+let newPhotoBase64 = null;    // عکس جدید انتخاب‌شده (base64)
+let newPhotoFilename = null;  // نام فایل عکس جدید
+let existingPhotoPath = null; // مسیر عکس موجود (وقتی در حال ویرایش)
 
 /* ═══════════ ورود ═══════════ */
 function getPass(){ return localStorage.getItem('torshak_admin_pass') || '1234'; }
@@ -257,7 +373,7 @@ document.querySelectorAll('.tab').forEach(t => {
   t.onclick = () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
-    ['products','cats','shop','export'].forEach(k => $('tab-' + k).classList.toggle('hidden', k !== t.dataset.tab));
+    ['products','cats','shop','github','export'].forEach(k => $('tab-' + k).classList.toggle('hidden', k !== t.dataset.tab));
     if (t.dataset.tab === 'export') buildExport();
   };
 });
@@ -280,7 +396,7 @@ function renderProducts(){
     const row = document.createElement('div');
     row.className = 'row-item';
     const media = p.img
-      ? '<div class="thumb"><img src="' + esc(p.img) + '" onerror="this.remove()"></div>'
+      ? '<div class="thumb"><img src="' + esc(p.img) + '" onerror="this.style.display=\'none\'"></div>'
       : '<div class="thumb" style="background:' + esc(p.color || '#eee') + '22">' + (p.emoji || '🫙') + '</div>';
     row.innerHTML = media +
       '<div class="info">' +
@@ -292,18 +408,27 @@ function renderProducts(){
     box.appendChild(row);
   });
   box.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editProduct(+b.dataset.edit));
-  box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+  box.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
     if (confirm('محصول «' + data.PRODUCTS[+b.dataset.del].name + '» حذف شود؟')){
       data.PRODUCTS.splice(+b.dataset.del, 1);
-      save(); renderProducts(); toast('حذف شد');
+      save(); renderProducts();
+      toast('حذف شد');
+      // سعی کن خودکار به گیت‌هاب بفرستی
+      if (GH.owner && GH.repo && GH.token){
+        try { await pushProductsToGithub(); toast('✅ از گیت‌هاب هم حذف شد', 'success'); }
+        catch(e){ console.error(e); }
+      }
     }
   });
 }
 function clearProductForm(){
   $('pId').value = ''; $('pName').value = ''; $('pUnit').value = '';
   $('pPrice').value = ''; $('pOldPrice').value = ''; $('pBadge').value = '';
-  $('pEmoji').value = ''; $('pImg').value = ''; $('pColor').value = '';
+  $('pEmoji').value = ''; $('pColor').value = '';
   $('pDesc').value = ''; $('pIngredients').value = ''; $('pStock').checked = true;
+  newPhotoBase64 = null; newPhotoFilename = null; existingPhotoPath = null;
+  renderPhotoBox();
+  $('photoInput').value = '';
 }
 function editProduct(i){
   const p = data.PRODUCTS[i];
@@ -317,11 +442,13 @@ function editProduct(i){
   $('pOldPrice').value = p.oldPrice ?? '';
   $('pBadge').value = p.badge || '';
   $('pEmoji').value = p.emoji || '';
-  $('pImg').value = p.img || '';
   $('pColor').value = p.color || '';
   $('pDesc').value = p.desc || '';
   $('pIngredients').value = p.ingredients || '';
   $('pStock').checked = p.stock !== false;
+  newPhotoBase64 = null; newPhotoFilename = null;
+  existingPhotoPath = p.img || null;
+  renderPhotoBox();
   $('productFormCard').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -331,31 +458,146 @@ $('addProductBtn').onclick = () => {
   $('productFormCard').classList.remove('hidden');
 };
 $('cancelProductForm').onclick = () => $('productFormCard').classList.add('hidden');
-$('productForm').onsubmit = e => {
+
+/* ═══════════ کادر عکس ═══════════ */
+function renderPhotoBox(){
+  const box = $('photoBox');
+  const imgSrc = newPhotoBase64 || existingPhotoPath;
+  if (imgSrc){
+    box.classList.add('has-image');
+    box.innerHTML =
+      '<img src="' + imgSrc + '" alt="">' +
+      '<button class="photo-remove" id="removePhoto" type="button">✕</button>' +
+      (newPhotoBase64 ? '<div class="photo-status">✓ آماده آپلود</div>' : '');
+    box.querySelector('#removePhoto').onclick = (e) => {
+      e.stopPropagation();
+      newPhotoBase64 = null; newPhotoFilename = null; existingPhotoPath = null;
+      $('photoInput').value = '';
+      renderPhotoBox();
+    };
+  } else {
+    box.classList.remove('has-image');
+    box.innerHTML =
+      '<div class="icon">📷</div>' +
+      '<div class="label"><strong>افزودن عکس</strong>از دوربین یا گالری</div>';
+  }
+}
+$('photoBox').onclick = () => $('photoInput').click();
+$('photoInput').onchange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')){ toast('❌ فایل باید عکس باشد', 'error'); return; }
+  try {
+    showProgress('📸 پردازش عکس...', 'فشرده‌سازی');
+    newPhotoBase64 = await compressImage(file);
+    newPhotoFilename = 'img-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2,6) + '.jpg';
+    existingPhotoPath = null;
+    hideProgress();
+    renderPhotoBox();
+    toast('✅ عکس آماده شد', 'success');
+  } catch(err){
+    hideProgress();
+    toast('❌ خطا در پردازش عکس', 'error');
+    console.error(err);
+  }
+};
+
+function compressImage(file, maxSize = 1000, quality = 0.82){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        if (width > height && width > maxSize){
+          height = Math.round((height * maxSize) / width); width = maxSize;
+        } else if (height > maxSize){
+          width = Math.round((width * maxSize) / height); height = maxSize;
+        }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ═══════════ ذخیره محصول ═══════════ */
+$('productForm').onsubmit = async (e) => {
   e.preventDefault();
   const num = v => { v = String(v).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/\D/g, ''); return v ? +v : null; };
   const id = $('pId').value || ('p-' + Date.now().toString(36));
-  const p = {
-    id,
-    cat: $('pCat').value,
-    name: $('pName').value.trim(),
-    unit: $('pUnit').value.trim() || null,
-    price: num($('pPrice').value) ?? 0,
-    oldPrice: num($('pOldPrice').value),
-    badge: $('pBadge').value.trim() || null,
-    stock: $('pStock').checked,
-    emoji: $('pEmoji').value.trim() || '🫙',
-    color: $('pColor').value.trim() || '#e8a33d',
-    img: $('pImg').value.trim() || null,
-    desc: $('pDesc').value.trim() || null,
-    ingredients: $('pIngredients').value.trim() || null
-  };
-  if (!p.name){ toast('نام محصول لازم است'); return; }
-  const idx = data.PRODUCTS.findIndex(x => x.id === id);
-  if (idx >= 0) data.PRODUCTS[idx] = p; else data.PRODUCTS.push(p);
-  save(); renderProducts();
-  $('productFormCard').classList.add('hidden');
-  toast('ذخیره شد ✅');
+  const btn = $('saveProductBtn');
+  btn.disabled = true;
+
+  try {
+    let imgPath = existingPhotoPath;
+
+    // اگه عکس جدید انتخاب شده، آپلود کن
+    if (newPhotoBase64){
+      if (!GH.owner || !GH.repo || !GH.token){
+        toast('❌ اول اطلاعات گیت‌هاب را در تب تنظیمات وارد کن', 'error');
+        $('tab-github').click();
+        btn.disabled = false;
+        return;
+      }
+      showProgress('📤 آپلود عکس به گیت‌هاب...', 'چند لحظه صبر کن');
+      imgPath = 'images/' + newPhotoFilename;
+      await githubPutFile(imgPath, newPhotoBase64.split(',')[1], `آپلود عکس: ${newPhotoFilename}`);
+      hideProgress();
+    }
+
+    // ساخت آبجکت محصول
+    const p = {
+      id,
+      cat: $('pCat').value,
+      name: $('pName').value.trim(),
+      unit: $('pUnit').value.trim() || null,
+      price: num($('pPrice').value) ?? 0,
+      oldPrice: num($('pOldPrice').value),
+      badge: $('pBadge').value.trim() || null,
+      stock: $('pStock').checked,
+      emoji: $('pEmoji').value.trim() || '🫙',
+      color: $('pColor').value.trim() || '#e8a33d',
+      img: imgPath || null,
+      desc: $('pDesc').value.trim() || null,
+      ingredients: $('pIngredients').value.trim() || null
+    };
+
+    if (!p.name){ toast('نام محصول لازم است', 'error'); btn.disabled = false; return; }
+
+    const idx = data.PRODUCTS.findIndex(x => x.id === id);
+    if (idx >= 0) data.PRODUCTS[idx] = p; else data.PRODUCTS.push(p);
+    save();
+
+    // به‌روزرسانی products.js در گیت‌هاب
+    if (GH.owner && GH.repo && GH.token){
+      showProgress('📝 به‌روزرسانی سایت...', 'در حال ارسال به گیت‌هاب');
+      await pushProductsToGithub();
+      hideProgress();
+      toast('✅ محصول ذخیره و سایت به‌روز شد', 'success');
+    } else {
+      toast('✅ محصول ذخیره شد (فقط روی همین گوشی)', 'success');
+      // نکته رو نشون بده
+    }
+
+    renderProducts();
+    $('productFormCard').classList.add('hidden');
+    clearProductForm();
+
+  } catch(err){
+    hideProgress();
+    toast('❌ ' + (err.message || 'خطا'), 'error');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
 };
 
 /* ═══════════ دسته‌بندی‌ها ═══════════ */
@@ -374,7 +616,7 @@ function renderCats(){
   });
   box.querySelectorAll('[data-cdel]').forEach(b => b.onclick = () => {
     const c = data.CATEGORIES[+b.dataset.cdel];
-    if (data.PRODUCTS.some(p => p.cat === c.id)){ toast('این دسته محصول دارد!'); return; }
+    if (data.PRODUCTS.some(p => p.cat === c.id)){ toast('این دسته محصول دارد!', 'error'); return; }
     if (confirm('دسته «' + c.name + '» حذف شود؟')){
       data.CATEGORIES.splice(+b.dataset.cdel, 1);
       save(); renderCats(); toast('حذف شد');
@@ -384,10 +626,10 @@ function renderCats(){
 $('catForm').onsubmit = e => {
   e.preventDefault();
   const id = $('cId').value.trim().replace(/\s+/g, '-');
-  if (!/^[a-z0-9-]+$/.test(id)){ toast('شناسه فقط حروف انگلیسی کوچک، عدد و خط‌تیره'); return; }
-  if (data.CATEGORIES.some(c => c.id === id)){ toast('این شناسه تکراری است'); return; }
+  if (!/^[a-z0-9-]+$/.test(id)){ toast('شناسه فقط حروف انگلیسی کوچک، عدد و خط‌تیره', 'error'); return; }
+  if (data.CATEGORIES.some(c => c.id === id)){ toast('این شناسه تکراری است', 'error'); return; }
   data.CATEGORIES.push({ id, name: $('cName').value.trim(), emoji: $('cEmoji').value.trim() || '🏷️' });
-  save(); renderCats(); e.target.reset(); toast('اضافه شد ✅');
+  save(); renderCats(); e.target.reset(); toast('اضافه شد ✅', 'success');
 };
 
 /* ═══════════ تنظیمات فروشگاه ═══════════ */
@@ -410,34 +652,160 @@ $('shopForm').onsubmit = e => {
     phone: $('sPhone').value.trim(),
     address: $('sAddress').value.trim()
   };
-  save(); toast('تنظیمات ذخیره شد ✅');
+  save(); toast('تنظیمات ذخیره شد ✅', 'success');
 };
 $('passForm').onsubmit = e => {
   e.preventDefault();
   localStorage.setItem('torshak_admin_pass', $('newPass').value);
   $('newPass').value = '';
-  toast('رمز تغییر کرد 🔐');
+  toast('رمز تغییر کرد 🔐', 'success');
 };
-$('resetBtn').onclick = () => {
-  if (confirm('همه تغییرات این مرورگر پاک و به حالت پیش‌فرض برگردد؟')){
-    localStorage.removeItem('torshak_data');
-    load(); renderProducts(); renderCats(); renderShop();
-    toast('بازنشانی شد');
+
+/* ═══════════ گیت‌هاب ═══════════ */
+function renderGithub(){
+  $('ghOwner').value = GH.owner || '';
+  $('ghRepo').value = GH.repo || 'Torshak';
+  $('ghToken').value = GH.token || '';
+  const ok = GH.owner && GH.repo && GH.token;
+  $('githubStatus').innerHTML = ok
+    ? '<div class="note ok">✅ اتصال به گیت‌هاب تنظیم شده است</div>'
+    : '';
+  $('githubNote').innerHTML = ok
+    ? '✅ اتصال به گیت‌هاب فعال است — عکس‌ها و محصولات خودکار آپلود می‌شوند'
+    : '⚙️ برای آپلود خودکار عکس و به‌روزرسانی سایت، به تب <b>تنظیمات</b> برو و اطلاعات گیت‌هاب را وارد کن.';
+  if (ok) $('githubNote').classList.add('ok'); else $('githubNote').classList.remove('ok');
+}
+$('githubForm').onsubmit = e => {
+  e.preventDefault();
+  GH.owner = $('ghOwner').value.trim();
+  GH.repo = $('ghRepo').value.trim() || 'Torshak';
+  GH.token = $('ghToken').value.trim();
+  localStorage.setItem('torshak.gh.owner', GH.owner);
+  localStorage.setItem('torshak.gh.repo', GH.repo);
+  localStorage.setItem('torshak.gh.token', GH.token);
+  renderGithub();
+  toast('✅ ذخیره شد', 'success');
+};
+$('clearGithubBtn').onclick = () => {
+  if (!confirm('اطلاعات گیت‌هاب پاک شود؟')) return;
+  GH = { owner: '', repo: 'Torshak', token: '' };
+  localStorage.removeItem('torshak.gh.owner');
+  localStorage.removeItem('torshak.gh.repo');
+  localStorage.removeItem('torshak.gh.token');
+  renderGithub();
+  toast('پاک شد');
+};
+$('testGithubBtn').onclick = async () => {
+  if (!GH.owner || !GH.repo || !GH.token){ toast('❌ اول اطلاعات را ذخیره کن', 'error'); return; }
+  showProgress('🧪 تست اتصال...', 'چند لحظه صبر کن');
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`, {
+      headers: {
+        'Authorization': `Bearer ${GH.token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+    hideProgress();
+    if (res.ok){
+      toast('✅ اتصال برقرار است', 'success');
+    } else if (res.status === 401){
+      toast('❌ توکن نامعتبر است', 'error');
+    } else if (res.status === 404){
+      toast('❌ مخزن پیدا نشد — نام کاربری یا مخزن را چک کن', 'error');
+    } else {
+      toast('❌ خطا: ' + res.status, 'error');
+    }
+  } catch(e){
+    hideProgress();
+    toast('❌ خطای شبکه', 'error');
+  }
+};
+$('pushAllBtn').onclick = async () => {
+  if (!GH.owner || !GH.repo || !GH.token){ toast('❌ اول اطلاعات گیت‌هاب را ذخیره کن', 'error'); return; }
+  showProgress('🚀 ارسال به گیت‌هاب...', 'چند لحظه صبر کن');
+  try {
+    await pushProductsToGithub();
+    hideProgress();
+    toast('✅ با موفقیت ارسال شد', 'success');
+  } catch(e){
+    hideProgress();
+    toast('❌ ' + (e.message || 'خطا'), 'error');
   }
 };
 
-/* ═══════════ خروجی ═══════════ */
+/* ═══════════ آپلود به گیت‌هاب ═══════════ */
+async function githubPutFile(path, base64Content, message){
+  const api = `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`;
+  const headers = {
+    'Authorization': `Bearer ${GH.token}`,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+
+  let sha = null;
+  try {
+    const check = await fetch(api, { headers });
+    if (check.ok){
+      const d = await check.json();
+      sha = d.sha;
+    }
+  } catch(e){}
+
+  const body = { message, content: base64Content };
+  if (sha) body.sha = sha;
+
+  const res = await fetch(api, {
+    method: 'PUT',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok){
+    let msg = 'خطا در ارتباط با گیت‌هاب';
+    try {
+      const err = await res.json();
+      if (err.message) msg = err.message;
+      if (res.status === 401) msg = 'توکن نامعتبر یا منقضی شده';
+      if (res.status === 403) msg = 'دسترسی کافی نداری (Contents باید Read+Write باشد)';
+      if (res.status === 404) msg = 'مخزن یا مسیر پیدا نشد';
+    } catch(e){}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+async function pushProductsToGithub(){
+  const content = generateProductsJs();
+  const base64 = btoa(unescape(encodeURIComponent(content)));
+  await githubPutFile('products.js', base64, 'به‌روزرسانی محصولات از پنل ادمین');
+}
+
+function generateProductsJs(){
+  let code = '';
+  code += '/* ترشک بندری — داده‌های فروشگاه (تولیدشده از پنل مدیریت) */\n\n';
+  code += 'const SHOP = ' + JSON.stringify(data.SHOP, null, 2) + ';\n\n';
+  code += 'const CATEGORIES = ' + JSON.stringify(data.CATEGORIES, null, 2) + ';\n\n';
+  code += 'const PRODUCTS = ' + JSON.stringify(data.PRODUCTS, null, 2) + ';\n';
+  return code;
+}
+
+/* ═══════════ خروجی دستی ═══════════ */
 function buildExport(){
-  $('exportArea').value =
-    '/* ترشک بندری — داده‌های فروشگاه (تولیدشده از پنل مدیریت) */\n\n' +
-    'const SHOP = ' + JSON.stringify(data.SHOP, null, 2) + ';\n\n' +
-    'const CATEGORIES = ' + JSON.stringify(data.CATEGORIES, null, 2) + ';\n\n' +
-    'const PRODUCTS = ' + JSON.stringify(data.PRODUCTS, null, 2) + ';\n';
+  $('exportArea').value = generateProductsJs();
 }
 $('copyExport').onclick = async () => {
-  try { await navigator.clipboard.writeText($('exportArea').value); toast('کپی شد 📋'); }
-  catch(e){ $('exportArea').select(); document.execCommand('copy'); toast('کپی شد 📋'); }
+  try { await navigator.clipboard.writeText($('exportArea').value); toast('کپی شد 📋', 'success'); }
+  catch(e){ $('exportArea').select(); document.execCommand('copy'); toast('کپی شد 📋', 'success'); }
 };
+
+/* ═══════════ Progress ═══════════ */
+function showProgress(title, text){
+  $('progressTitle').textContent = title;
+  $('progressText').textContent = text || '';
+  $('progressOverlay').classList.add('show');
+}
+function hideProgress(){ $('progressOverlay').classList.remove('show'); }
 
 /* ═══════════ شروع ═══════════ */
 function initPanel(){
@@ -445,11 +813,12 @@ function initPanel(){
   renderProducts();
   renderCats();
   renderShop();
+  renderGithub();
+  renderPhotoBox();
 }
 </script>
 <script src="products.js"></script>
 <script>
-/* اگر products.js خطا داشت، پنل با داده‌ی ذخیره‌شده یا خالی کار کند */
 if (typeof SHOP === 'undefined'){
   console.warn('products.js نامعتبر است؛ با داده‌ی localStorage کار می‌کنیم.');
 }
