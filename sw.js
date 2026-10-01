@@ -1,5 +1,5 @@
-const CACHE = 'torshak-v3';
-const FONT_CACHE = 'torshak-fonts-v3';
+const CACHE = 'torshak-v4';
+const FONT_CACHE = 'torshak-fonts-v4';
 
 const ASSETS = [
   './',
