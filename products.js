@@ -1,128 +1,26 @@
-/* ═══════════════════════════════════════════
-   اطلاعات فروشگاه — تولید شده توسط پنل ادمین
-   ═══════════════════════════════════════════ */
-
-const SHOP = {
-  name: 'ترشک بندری',
-  tagline: 'ترشی و ترشک خانگی بوشهر',
-  whatsapp: '989121234567',
-  instagram: 'torshak_bandari',
-  address: 'بوشهر، ...',
-};
-
-const CATEGORIES = [
-  { id: 'all', name: 'همه', emoji: '🍽️' },
-  { id: 'torshi', name: 'ترشی', emoji: '🌶️' },
-  { id: 'khyarshoor', name: 'خیارشور', emoji: '🥒' },
-  { id: 'lavashak', name: 'لواشک', emoji: '🍑' },
-];
-
-const PRODUCTS = [
-  {
-    id: 'torshi-bandari',
-    name: 'ترشی بندری',
-    category: 'torshi',
-    price: 45000,
-    oldPrice: 60000,
-    unit: 'ظرف ۵۰۰ گرمی',
-    emoji: '🌶️',
-    color: '#b8341e',
-    image: 'images/img-mupzd5e8-1o3lp.jpg',
-    description: 'ترشی اصیل بندری با ادویه‌های مخصوص و سیر تازه. طعم تند و خوش‌عطر که یادآور سفره‌های جنوبیه.',
-    ingredients: 'سیر، فلفل، ادویه بندری، سرکه طبیعی',
-    featured: true,
-    inStock: true,
+{
+  "SHOP": {
+    "name": "ترشک بندری",
+    "tagline": "ترشی و ترشک خانگی بوشهر",
+    "whatsapp": "989121234567",
+    "instagram": "torshak_bandari",
+    "address": "بوشهر، ..."
   },
-  {
-    id: 'khyarshoor-khanegi',
-    name: 'خیارشور خانگی',
-    category: 'khyarshoor',
-    price: 135000,
-    unit: 'ظرف ۵۰۰ گرمی',
-    emoji: '🌶️',
-    color: '#b8341e',
-    description: 'خیارشور ترش و ترد، با ترخون و سیر تازه. همون طعمی که مادربزرگ‌ها می‌ساختن.',
-    ingredients: 'خیار، سرکه، ترخون، سیر، نمک دریا',
-    featured: false,
-    inStock: true,
-  },
-  {
-    id: 'lavashak-alu',
-    name: 'لواشک آلو',
-    category: 'lavashak',
-    price: 30000,
-    unit: 'بسته ۲۵۰ گرمی',
-    emoji: '🍑',
-    color: '#c0392b',
-    description: 'لواشک آلو با طعم ترش و ملس. بدون مواد نگهدارنده، خشک‌شده زیر آفتاب بوشهر.',
-    ingredients: 'آلو، نمک، ادویه مخصوص',
-    featured: true,
-    inStock: true,
-  },
-  {
-    id: 'lavashak-alucheh',
-    name: 'لواشک آلوچه',
-    category: 'lavashak',
-    price: 28000,
-    oldPrice: 35000,
-    unit: 'بسته ۲۵۰ گرمی',
-    emoji: '🟢',
-    color: '#7ba05b',
-    description: 'لواشک آلوچه ترش و باحال! برای اونایی که ترشی زیاد دوست دارن.',
-    ingredients: 'آلوچه، نمک',
-    featured: false,
-    inStock: true,
-  },
-  {
-    id: 'torshi-liteh',
-    name: 'ترشی لیته بادمجان',
-    category: 'torshi',
-    price: 40000,
-    unit: 'ظرف ۵۰۰ گرمی',
-    emoji: '🍆',
-    color: '#6b3a6b',
-    description: 'لیته بادمجان با سیر و نعنا خشک. کنار هر غذایی می‌چسبه!',
-    ingredients: 'بادمجان، سیر، نعنا خشک، سرکه، ادویه',
-    featured: false,
-    inStock: true,
-  },
-  {
-    id: 'torshi-sir',
-    name: 'ترشی سیر',
-    category: 'torshi',
-    price: 55000,
-    unit: 'ظرف ۳۰۰ گرمی',
-    emoji: '🧄',
-    color: '#d4a574',
-    description: 'ترشی سیر درسته با سرکه طبیعی. خاصیت دارویی و طعم بی‌نظیر.',
-    ingredients: 'سیر درسته، سرکه انگور، نمک',
-    featured: false,
-    inStock: true,
-  },
-  {
-    id: 'torshi-mokhlot',
-    name: 'ترشی مخلوط',
-    category: 'torshi',
-    price: 42000,
-    unit: 'ظرف ۵۰۰ گرمی',
-    emoji: '🥗',
-    color: '#b8341e',
-    description: 'مخلوطی از سبزیجات فصل با ادویه خانگی. تازه و خوش‌رنگ.',
-    ingredients: 'گل کلم، هویج، خیار، فلفل، ادویه',
-    featured: false,
-    inStock: true,
-  },
-  {
-    id: 'lavashak-anar',
-    name: 'لواشک انار',
-    category: 'lavashak',
-    price: 32000,
-    unit: 'بسته ۲۵۰ گرمی',
-    emoji: '🔴',
-    color: '#8b2415',
-    description: 'لواشک انار ملس و خاص. طرفدارای خاص خودشو داره.',
-    ingredients: 'انار، نمک',
-    featured: false,
-    inStock: false,
-  },
-];
+  "CATEGORIES": [
+    {
+      "id": "all",
+      "name": "همه",
+      "emoji": "🍽️"
+    },
+    {
+      "id": "torshi",
+      "name": "ترشی",
+      "emoji": "🌶️"
+    },
+    {
+      "id": "khyarshoor",
+      "name": "خیارشور",
+      "emoji": "🥒"
+    },
+    {
+      "id": "lavashak",
