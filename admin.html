@@ -19,7 +19,7 @@
 }
 body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;padding-bottom:40px;padding-top:env(safe-area-inset-top);background-image:radial-gradient(circle at 20% 10%,rgba(232,163,61,.08),transparent 40%),radial-gradient(circle at 80% 80%,rgba(184,52,30,.06),transparent 45%)}
 
-/* اتصال */
+/* دروازه ورود */
 #gate{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#b8341e,#8b2415);padding:24px;overflow-y:auto}
 .gate-box{background:var(--card);padding:28px 22px;border-radius:22px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto}
 .gate-box .lock{font-size:46px;margin-bottom:8px}
@@ -27,6 +27,432 @@ body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var
 .gate-box p{font-size:12px;color:var(--soft);margin-bottom:18px;line-height:1.8}
 .gate-box .field{text-align:right;margin-bottom:12px}
 .gate-box .field label{display:block;font-size:12px;font-weight:500;margin-bottom:5px}
-.gate-box input[type=text],.gate-box input[type=password]{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;background:var(--bg);outline:none}
-.gate-box input[dir=ltr]{text-align:left}
+.gate-box input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;background:var(--bg);outline:none}
 .gate-box input:focus{border-color:var(--primary)}
+.gate-btn{width:100%;padding:14px;border:0;border-radius:13px;background:var(--primary);color:#fff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
+.gate-err{color:var(--danger);font-size:12px;margin-top:10px;display:none}
+
+/* پنل */
+#panel{max-width:640px;margin:0 auto;padding:16px;display:none}
+.panel-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.panel-head .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#d44a30,#8b2415);box-shadow:0 8px 20px -6px rgba(184,52,30,.6)}
+.panel-head h1{font-family:'Lalezar',sans-serif;font-size:20px;font-weight:400;color:var(--primary-dark);flex:1}
+.panel-head a{font-size:11.5px;color:var(--soft);text-decoration:none;border:1px solid var(--border);background:var(--card);padding:7px 12px;border-radius:99px}
+
+.tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:10px 18px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);font-family:inherit;font-size:13px;font-weight:500;color:var(--soft);cursor:pointer}
+.tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.card h3{font-size:14px;font-weight:700;color:var(--primary-dark);margin-bottom:10px}
+.row-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--border)}
+.row-item:last-child{border-bottom:0}
+.row-item .info{flex:1;min-width:0}
+.row-item .name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-item .sub{font-size:11px;color:var(--soft);margin-top:2px}
+.row-item .thumb{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;font-size:22px;overflow:hidden;background:#f7ead8}
+.row-item .thumb img{width:100%;height:100%;object-fit:cover}
+
+.btn{border:0;border-radius:10px;padding:9px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn.danger{background:#fdecec;color:var(--danger)}
+.btn.big{width:100%;padding:14px;font-size:14px;border-radius:13px}
+.btn.out{background:#f3f3f3;color:#666;text-decoration:line-through}
+
+form .f{margin-bottom:12px}
+form label{display:block;font-size:12px;font-weight:500;margin-bottom:5px}
+form input,form select,form textarea{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:11px;font-family:inherit;font-size:13px;background:var(--bg);outline:none}
+form input:focus,form select:focus,form textarea:focus{border-color:var(--primary)}
+form textarea{min-height:70px;resize:vertical}
+form input[dir=ltr]{text-align:left}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check{display:flex;align-items:center;gap:8px;font-size:13px}
+.check input{width:auto}
+
+.note{font-size:11.5px;color:var(--soft);background:#fff8ec;border:1px dashed var(--mustard);border-radius:12px;padding:10px 14px;line-height:1.9;margin-bottom:12px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--primary-dark);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;z-index:500;transition:.3s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- دروازه ورود -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="lock">🔐</div>
+    <h1>پنل مدیریت ترشک بندری</h1>
+    <p>رمز عبور را وارد کنید.<br>رمز پیش‌فرض: <b>1234</b> (بعداً از بخش تنظیمات تغییرش دهید)</p>
+    <div class="field">
+      <label>رمز عبور</label>
+      <input type="password" id="gatePass" dir="ltr" placeholder="••••" autocomplete="current-password">
+    </div>
+    <button class="gate-btn" id="gateBtn">ورود</button>
+    <div class="gate-err" id="gateErr">رمز اشتباه است!</div>
+  </div>
+</div>
+
+<!-- پنل -->
+<div id="panel">
+  <div class="panel-head">
+    <div class="logo">🌶️</div>
+    <h1>پنل مدیریت</h1>
+    <a href="./">مشاهده سایت ↗</a>
+  </div>
+
+  <div class="note">
+    ⚠️ تغییرات این پنل در <b>همین مرورگر</b> ذخیره می‌شود و بلافاصله در سایت اعمال می‌شود.
+    برای اینکه برای <b>همه‌ی مشتری‌ها</b> اعمال شود، بعد از تغییرات به تب «خروجی» بروید،
+    فایل products.js جدید را کپی و در گیت‌هاب جایگزین کنید.
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="products">🫙 محصولات</button>
+    <button class="tab" data-tab="cats">🏷️ دسته‌بندی‌ها</button>
+    <button class="tab" data-tab="shop">⚙️ تنظیمات فروشگاه</button>
+    <button class="tab" data-tab="export">📤 خروجی</button>
+  </div>
+
+  <!-- محصولات -->
+  <div id="tab-products">
+    <button class="btn primary big" id="addProductBtn" style="margin-bottom:12px">＋ افزودن محصول جدید</button>
+    <div class="card hidden" id="productFormCard">
+      <h3 id="productFormTitle">افزودن محصول</h3>
+      <form id="productForm">
+        <input type="hidden" id="pId">
+        <div class="f"><label>نام محصول *</label><input id="pName" required></div>
+        <div class="grid2">
+          <div class="f"><label>دسته‌بندی *</label><select id="pCat"></select></div>
+          <div class="f"><label>واحد (مثلاً ظرف ۷۰۰ گرمی)</label><input id="pUnit"></div>
+        </div>
+        <div class="grid2">
+          <div class="f"><label>قیمت (تومان) *</label><input id="pPrice" dir="ltr" inputmode="numeric" required></div>
+          <div class="f"><label>قیمت قبل از تخفیف</label><input id="pOldPrice" dir="ltr" inputmode="numeric"></div>
+        </div>
+        <div class="grid2">
+          <div class="f"><label>برچسب (پرفروش، جدید…)</label><input id="pBadge"></div>
+          <div class="f"><label>ایموجی</label><input id="pEmoji" dir="ltr" placeholder="🌶️"></div>
+        </div>
+        <div class="f"><label>مسیر عکس (مثل images/product.jpg) — خالی = ایموجی</label><input id="pImg" dir="ltr"></div>
+        <div class="f"><label>رنگ پس‌زمینه (کد HEX)</label><input id="pColor" dir="ltr" placeholder="#e8a33d"></div>
+        <div class="f"><label>توضیح</label><textarea id="pDesc"></textarea></div>
+        <div class="f"><label>مواد تشکیل‌دهنده</label><input id="pIngredients"></div>
+        <div class="f check"><input type="checkbox" id="pStock" checked><label for="pStock" style="margin:0">موجود است</label></div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button type="submit" class="btn primary" style="flex:1">💾 ذخیره</button>
+          <button type="button" class="btn ghost" id="cancelProductForm">انصراف</button>
+        </div>
+      </form>
+    </div>
+    <div class="card"><h3>لیست محصولات</h3><div id="productList"></div></div>
+  </div>
+
+  <!-- دسته‌بندی‌ها -->
+  <div id="tab-cats" class="hidden">
+    <div class="card">
+      <h3>افزودن دسته‌بندی</h3>
+      <form id="catForm">
+        <div class="grid2">
+          <div class="f"><label>شناسه (انگلیسی، یکتا) *</label><input id="cId" dir="ltr" required placeholder="makhsoos"></div>
+          <div class="f"><label>نام *</label><input id="cName" required></div>
+        </div>
+        <div class="f"><label>ایموجی</label><input id="cEmoji" dir="ltr" placeholder="⭐"></div>
+        <button type="submit" class="btn primary big">＋ افزودن</button>
+      </form>
+    </div>
+    <div class="card"><h3>دسته‌بندی‌های فعلی</h3><div id="catList"></div></div>
+  </div>
+
+  <!-- تنظیمات فروشگاه -->
+  <div id="tab-shop" class="hidden">
+    <div class="card">
+      <h3>اطلاعات فروشگاه</h3>
+      <form id="shopForm">
+        <div class="f"><label>نام فروشگاه</label><input id="sName"></div>
+        <div class="f"><label>شعار (زیر نام)</label><input id="sTagline"></div>
+        <div class="f"><label>شماره واتساپ (با کد کشور، بدون +) *</label><input id="sWhatsapp" dir="ltr" placeholder="989121234567"></div>
+        <div class="f"><label>آیدی اینستاگرام (بدون @)</label><input id="sInstagram" dir="ltr"></div>
+        <div class="f"><label>شماره تماس</label><input id="sPhone" dir="ltr" placeholder="09121234567"></div>
+        <div class="f"><label>آدرس</label><input id="sAddress"></div>
+        <button type="submit" class="btn primary big">💾 ذخیره تنظیمات</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>تغییر رمز پنل</h3>
+      <form id="passForm">
+        <div class="f"><label>رمز جدید</label><input id="newPass" type="password" dir="ltr" required minlength="4"></div>
+        <button type="submit" class="btn ghost big">🔐 تغییر رمز</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>بازنشانی</h3>
+      <p style="font-size:12px;color:var(--soft);margin-bottom:10px;line-height:1.8">بازگرداندن داده‌ها به حالت پیش‌فرض فایل products.js (تغییرات این مرورگر پاک می‌شود).</p>
+      <button class="btn danger big" id="resetBtn">🗑️ بازنشانی به پیش‌فرض</button>
+    </div>
+  </div>
+
+  <!-- خروجی -->
+  <div id="tab-export" class="hidden">
+    <div class="card">
+      <h3>فایل products.js جدید</h3>
+      <p style="font-size:12px;color:var(--soft);margin-bottom:10px;line-height:1.8">
+        این متن را کپی کنید و در گیت‌هاب، محتوای فایل <b>products.js</b> را با آن جایگزین کنید تا تغییرات برای همه اعمال شود.
+      </p>
+      <textarea id="exportArea" dir="ltr" style="width:100%;min-height:220px;font-family:monospace;font-size:11px;padding:10px;border:1.5px solid var(--border);border-radius:11px;background:#fafafa"></textarea>
+      <button class="btn primary big" id="copyExport" style="margin-top:10px">📋 کپی خروجی</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════ ابزار ═══════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastTimer = null;
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ═══════════ داده ═══════════ */
+let data = null;
+function defaults(){
+  return {
+    SHOP: typeof SHOP !== 'undefined' ? SHOP : {},
+    CATEGORIES: typeof CATEGORIES !== 'undefined' ? CATEGORIES : [],
+    PRODUCTS: typeof PRODUCTS !== 'undefined' ? PRODUCTS : []
+  };
+}
+function load(){
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem('torshak_data') || 'null'); } catch(e){}
+  if (!d || !Array.isArray(d.PRODUCTS)) d = defaults();
+  data = JSON.parse(JSON.stringify(d));
+}
+function save(){
+  localStorage.setItem('torshak_data', JSON.stringify(data));
+}
+
+/* ═══════════ ورود ═══════════ */
+function getPass(){ return localStorage.getItem('torshak_admin_pass') || '1234'; }
+function tryLogin(){
+  if ($('gatePass').value === getPass()){
+    $('gate').style.display = 'none';
+    $('panel').style.display = 'block';
+    initPanel();
+  } else {
+    $('gateErr').style.display = 'block';
+    $('gatePass').value = '';
+  }
+}
+$('gateBtn').onclick = tryLogin;
+$('gatePass').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+/* ═══════════ تب‌ها ═══════════ */
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    ['products','cats','shop','export'].forEach(k => $('tab-' + k).classList.toggle('hidden', k !== t.dataset.tab));
+    if (t.dataset.tab === 'export') buildExport();
+  };
+});
+
+/* ═══════════ محصولات ═══════════ */
+function fillCatSelect(){
+  const sel = $('pCat');
+  sel.innerHTML = '';
+  data.CATEGORIES.filter(c => c.id !== 'all').forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id; o.textContent = (c.emoji ? c.emoji + ' ' : '') + c.name;
+    sel.appendChild(o);
+  });
+}
+function renderProducts(){
+  const box = $('productList');
+  box.innerHTML = '';
+  if (!data.PRODUCTS.length){ box.innerHTML = '<div class="row-item"><div class="info"><div class="sub">محصولی نیست</div></div></div>'; return; }
+  data.PRODUCTS.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'row-item';
+    const media = p.img
+      ? '<div class="thumb"><img src="' + esc(p.img) + '" onerror="this.remove()"></div>'
+      : '<div class="thumb" style="background:' + esc(p.color || '#eee') + '22">' + (p.emoji || '🫙') + '</div>';
+    row.innerHTML = media +
+      '<div class="info">' +
+        '<div class="name">' + esc(p.name) + (p.stock === false ? ' <span style="color:var(--danger);font-size:10px">(ناموجود)</span>' : '') + '</div>' +
+        '<div class="sub">' + Number(p.price || 0).toLocaleString('en-US') + ' تومان' + (p.unit ? ' · ' + esc(p.unit) : '') + '</div>' +
+      '</div>' +
+      '<button class="btn ghost" data-edit="' + i + '">✏️</button>' +
+      '<button class="btn danger" data-del="' + i + '">🗑️</button>';
+    box.appendChild(row);
+  });
+  box.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editProduct(+b.dataset.edit));
+  box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    if (confirm('محصول «' + data.PRODUCTS[+b.dataset.del].name + '» حذف شود؟')){
+      data.PRODUCTS.splice(+b.dataset.del, 1);
+      save(); renderProducts(); toast('حذف شد');
+    }
+  });
+}
+function clearProductForm(){
+  $('pId').value = ''; $('pName').value = ''; $('pUnit').value = '';
+  $('pPrice').value = ''; $('pOldPrice').value = ''; $('pBadge').value = '';
+  $('pEmoji').value = ''; $('pImg').value = ''; $('pColor').value = '';
+  $('pDesc').value = ''; $('pIngredients').value = ''; $('pStock').checked = true;
+}
+function editProduct(i){
+  const p = data.PRODUCTS[i];
+  fillCatSelect();
+  $('productFormTitle').textContent = 'ویرایش: ' + p.name;
+  $('pId').value = p.id;
+  $('pName').value = p.name || '';
+  $('pCat').value = p.cat || '';
+  $('pUnit').value = p.unit || '';
+  $('pPrice').value = p.price ?? '';
+  $('pOldPrice').value = p.oldPrice ?? '';
+  $('pBadge').value = p.badge || '';
+  $('pEmoji').value = p.emoji || '';
+  $('pImg').value = p.img || '';
+  $('pColor').value = p.color || '';
+  $('pDesc').value = p.desc || '';
+  $('pIngredients').value = p.ingredients || '';
+  $('pStock').checked = p.stock !== false;
+  $('productFormCard').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+$('addProductBtn').onclick = () => {
+  fillCatSelect(); clearProductForm();
+  $('productFormTitle').textContent = 'افزودن محصول';
+  $('productFormCard').classList.remove('hidden');
+};
+$('cancelProductForm').onclick = () => $('productFormCard').classList.add('hidden');
+$('productForm').onsubmit = e => {
+  e.preventDefault();
+  const num = v => { v = String(v).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/\D/g, ''); return v ? +v : null; };
+  const id = $('pId').value || ('p-' + Date.now().toString(36));
+  const p = {
+    id,
+    cat: $('pCat').value,
+    name: $('pName').value.trim(),
+    unit: $('pUnit').value.trim() || null,
+    price: num($('pPrice').value) ?? 0,
+    oldPrice: num($('pOldPrice').value),
+    badge: $('pBadge').value.trim() || null,
+    stock: $('pStock').checked,
+    emoji: $('pEmoji').value.trim() || '🫙',
+    color: $('pColor').value.trim() || '#e8a33d',
+    img: $('pImg').value.trim() || null,
+    desc: $('pDesc').value.trim() || null,
+    ingredients: $('pIngredients').value.trim() || null
+  };
+  if (!p.name){ toast('نام محصول لازم است'); return; }
+  const idx = data.PRODUCTS.findIndex(x => x.id === id);
+  if (idx >= 0) data.PRODUCTS[idx] = p; else data.PRODUCTS.push(p);
+  save(); renderProducts();
+  $('productFormCard').classList.add('hidden');
+  toast('ذخیره شد ✅');
+};
+
+/* ═══════════ دسته‌بندی‌ها ═══════════ */
+function renderCats(){
+  const box = $('catList');
+  box.innerHTML = '';
+  data.CATEGORIES.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'row-item';
+    row.innerHTML =
+      '<div class="thumb">' + (c.emoji || '🏷️') + '</div>' +
+      '<div class="info"><div class="name">' + esc(c.name) + '</div><div class="sub">' + esc(c.id) + '</div></div>' +
+      (c.id === 'all' ? '<span class="sub" style="font-size:11px;color:var(--soft)">ثابت</span>'
+                      : '<button class="btn danger" data-cdel="' + i + '">🗑️</button>');
+    box.appendChild(row);
+  });
+  box.querySelectorAll('[data-cdel]').forEach(b => b.onclick = () => {
+    const c = data.CATEGORIES[+b.dataset.cdel];
+    if (data.PRODUCTS.some(p => p.cat === c.id)){ toast('این دسته محصول دارد!'); return; }
+    if (confirm('دسته «' + c.name + '» حذف شود؟')){
+      data.CATEGORIES.splice(+b.dataset.cdel, 1);
+      save(); renderCats(); toast('حذف شد');
+    }
+  });
+}
+$('catForm').onsubmit = e => {
+  e.preventDefault();
+  const id = $('cId').value.trim().replace(/\s+/g, '-');
+  if (!/^[a-z0-9-]+$/.test(id)){ toast('شناسه فقط حروف انگلیسی کوچک، عدد و خط‌تیره'); return; }
+  if (data.CATEGORIES.some(c => c.id === id)){ toast('این شناسه تکراری است'); return; }
+  data.CATEGORIES.push({ id, name: $('cName').value.trim(), emoji: $('cEmoji').value.trim() || '🏷️' });
+  save(); renderCats(); e.target.reset(); toast('اضافه شد ✅');
+};
+
+/* ═══════════ تنظیمات فروشگاه ═══════════ */
+function renderShop(){
+  const s = data.SHOP || {};
+  $('sName').value = s.name || '';
+  $('sTagline').value = s.tagline || '';
+  $('sWhatsapp').value = s.whatsapp || '';
+  $('sInstagram').value = s.instagram || '';
+  $('sPhone').value = s.phone || '';
+  $('sAddress').value = s.address || '';
+}
+$('shopForm').onsubmit = e => {
+  e.preventDefault();
+  data.SHOP = {
+    name: $('sName').value.trim(),
+    tagline: $('sTagline').value.trim(),
+    whatsapp: $('sWhatsapp').value.replace(/\D/g, ''),
+    instagram: $('sInstagram').value.trim().replace(/^@/, ''),
+    phone: $('sPhone').value.trim(),
+    address: $('sAddress').value.trim()
+  };
+  save(); toast('تنظیمات ذخیره شد ✅');
+};
+$('passForm').onsubmit = e => {
+  e.preventDefault();
+  localStorage.setItem('torshak_admin_pass', $('newPass').value);
+  $('newPass').value = '';
+  toast('رمز تغییر کرد 🔐');
+};
+$('resetBtn').onclick = () => {
+  if (confirm('همه تغییرات این مرورگر پاک و به حالت پیش‌فرض برگردد؟')){
+    localStorage.removeItem('torshak_data');
+    load(); renderProducts(); renderCats(); renderShop();
+    toast('بازنشانی شد');
+  }
+};
+
+/* ═══════════ خروجی ═══════════ */
+function buildExport(){
+  $('exportArea').value =
+    '/* ترشک بندری — داده‌های فروشگاه (تولیدشده از پنل مدیریت) */\n\n' +
+    'const SHOP = ' + JSON.stringify(data.SHOP, null, 2) + ';\n\n' +
+    'const CATEGORIES = ' + JSON.stringify(data.CATEGORIES, null, 2) + ';\n\n' +
+    'const PRODUCTS = ' + JSON.stringify(data.PRODUCTS, null, 2) + ';\n';
+}
+$('copyExport').onclick = async () => {
+  try { await navigator.clipboard.writeText($('exportArea').value); toast('کپی شد 📋'); }
+  catch(e){ $('exportArea').select(); document.execCommand('copy'); toast('کپی شد 📋'); }
+};
+
+/* ═══════════ شروع ═══════════ */
+function initPanel(){
+  load();
+  renderProducts();
+  renderCats();
+  renderShop();
+}
+</script>
+<script src="products.js"></script>
+<script>
+/* اگر products.js خطا داشت، پنل با داده‌ی ذخیره‌شده یا خالی کار کند */
+if (typeof SHOP === 'undefined'){
+  console.warn('products.js نامعتبر است؛ با داده‌ی localStorage کار می‌کنیم.');
+}
+</script>
+</body>
+</html>
