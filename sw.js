@@ -4,8 +4,8 @@
    - فونت: اول کش
    - پنل ادمین و صفحه بررسی: اصلاً دست نمی‌خوره */
 
-const CACHE = 'torshak-v8';
-const FONT_CACHE = 'torshak-fonts-v8';
+const CACHE = 'torshak-v9';
+const FONT_CACHE = 'torshak-fonts-v9';
 const NETWORK_TIMEOUT = 5000;
 
 const ASSETS = [
