@@ -202,5 +202,20 @@ const PRODUCTS = [
     "img": "images/img-muq38lpl-by6f.jpg",
     "desc": "این ترشی خیلی خوبه",
     "ingredients": "سنگ،کاغذ،قیچی"
+  },
+  {
+    "id": "p-muq3jcf0",
+    "cat": "khyarshoor",
+    "name": "خیارترش",
+    "unit": "750",
+    "price": 250,
+    "oldPrice": 3500,
+    "badge": "پرفروش",
+    "stock": true,
+    "emoji": "🫙",
+    "color": "#e8a33d",
+    "img": "images/img-muq3j01k-ps6v.jpg",
+    "desc": "این خیارشور خیلی ترش است",
+    "ingredients": "نمک،فلفل"
   }
 ];
