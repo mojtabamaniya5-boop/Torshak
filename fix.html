@@ -24,3 +24,75 @@ a.btn{display:block;text-align:center;padding:12px;border-radius:12px;border:1.5
 <button id="clearBtn">🧹 پاک‌سازی کش برنامه</button>
 <button class="alt" id="copyBtn">📋 کپی گزارش</button>
 <a class="btn" href="./">باز کردن سایت</a>
+<a class="btn" href="./admin.html">پنل مدیریت</a>
+
+<script>
+const out = document.getElementById('out');
+const lines = [];
+function row(label, status, detail){
+  const cls = status === 'ok' ? 'ok' : status === 'bad' ? 'bad' : 'warn';
+  const mark = status === 'ok' ? '✅' : status === 'bad' ? '❌' : '⚠️';
+  lines.push({ html: '<div class="row"><span class="' + cls + '">' + mark + ' ' + label + '</span>' + (detail ? ' — <small>' + detail + '</small>' : '') + '</div>', text: mark + ' ' + label + (detail ? ' — ' + detail : '') });
+  render();
+}
+function render(){ out.innerHTML = lines.map(l => l.html).join(''); }
+
+async function check(){
+  lines.length = 0;
+  // ۱) فایل‌ها
+  for (const f of ['index.html', 'styles.css', 'app.js', 'products.js', 'manifest.json', 'sw.js', 'icon.svg']){
+    try {
+      const r = await fetch('./' + f, { cache: 'no-store' });
+      row(f, r.ok ? 'ok' : 'bad', 'HTTP ' + r.status);
+    } catch(e){ row(f, 'bad', 'خطا در بارگذاری'); }
+  }
+  // ۲) اعتبار products.js
+  try {
+    const src = await (await fetch('./products.js', { cache: 'no-store' })).text();
+    new Function(src + '; return {SHOP:typeof SHOP!=="undefined"?SHOP:null, PRODUCTS:typeof PRODUCTS!=="undefined"?PRODUCTS:null};');
+    const d = new Function(src + '; return {SHOP:typeof SHOP!=="undefined"?SHOP:null, PRODUCTS:typeof PRODUCTS!=="undefined"?PRODUCTS:null};')();
+    if (d.PRODUCTS && Array.isArray(d.PRODUCTS)) row('داده products.js', 'ok', d.PRODUCTS.length + ' محصول');
+    else row('داده products.js', 'bad', 'PRODUCTS پیدا نشد — فایل خراب است');
+  } catch(e){ row('داده products.js', 'bad', 'خطای سینتکس: ' + e.message); }
+  // ۳) localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem('torshak_data') || 'null');
+    row('داده پنل مدیریت', saved && saved.PRODUCTS ? 'ok' : 'warn', saved && saved.PRODUCTS ? saved.PRODUCTS.length + ' محصول ذخیره شده' : 'ذخیره نشده (پیش‌فرض)');
+  } catch(e){ row('داده پنل مدیریت', 'bad', 'خراب است'); }
+  // ۴) Service Worker
+  if ('serviceWorker' in navigator){
+    const regs = await navigator.serviceWorker.getRegistrations();
+    row('Service Worker', regs.length ? 'ok' : 'warn', regs.length ? regs.length + ' ثبت فعال' : 'ثبت نشده');
+  } else row('Service Worker', 'warn', 'مرورگر پشتیبانی نمی‌کند');
+  // ۵) کش‌ها
+  if ('caches' in window){
+    const keys = await caches.keys();
+    row('کش‌ها', keys.length ? 'warn' : 'ok', keys.length ? keys.join(', ') : 'خالی');
+  }
+  // ۶) آنلاین
+  row('اتصال اینترنت', navigator.onLine ? 'ok' : 'bad', navigator.onLine ? 'آنلاین' : 'آفلاین');
+}
+
+document.getElementById('clearBtn').onclick = async () => {
+  if ('caches' in window){
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+  }
+  if ('serviceWorker' in navigator){
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+  }
+  alert('کش پاک شد. حالا سایت را دوباره باز کنید.');
+  check();
+};
+
+document.getElementById('copyBtn').onclick = async () => {
+  const txt = 'گزارش بررسی ترشک بندری — ' + new Date().toLocaleString('fa-IR') + '\n' + lines.map(l => l.text).join('\n');
+  try { await navigator.clipboard.writeText(txt); alert('گزارش کپی شد'); }
+  catch(e){ prompt('کپی کنید:', txt); }
+};
+
+check();
+</script>
+</body>
+</html>
