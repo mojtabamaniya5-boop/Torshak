@@ -141,10 +141,70 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
   50%{transform:rotate(-12deg) translateY(-8px)}
 }
 
+/* ══════════ جستجو + رفرش ══════════ */
+.search-row{
+  display:flex;gap:8px;
+  margin-top:18px;
+}
+
+.search-box{
+  flex:1;
+  display:flex;align-items:center;gap:8px;
+  padding:0 14px;
+  height:50px;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:15px;
+  box-shadow:var(--shadow-sm);
+  transition:border-color .2s,box-shadow .2s;
+}
+.search-box:focus-within{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(184,52,30,.08);
+}
+.search-icon{
+  width:20px;height:20px;flex-shrink:0;
+  color:var(--text-soft);
+}
+.search-box input{
+  flex:1;min-width:0;
+  border:none;background:transparent;
+  font-family:inherit;font-size:14px;
+  color:var(--text);outline:none;
+  padding:0;
+}
+.search-box input::placeholder{color:var(--text-soft)}
+
+.search-clear{
+  width:26px;height:26px;flex-shrink:0;
+  border-radius:50%;border:none;
+  background:var(--bg);
+  display:grid;place-items:center;
+  cursor:pointer;color:var(--text-soft);
+  transition:transform .2s;
+}
+.search-clear:active{transform:scale(.85)}
+.search-clear svg{width:14px;height:14px}
+
+.refresh-btn{
+  width:50px;height:50px;flex-shrink:0;
+  border-radius:15px;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  display:grid;place-items:center;
+  cursor:pointer;color:var(--primary);
+  box-shadow:var(--shadow-sm);
+  transition:transform .2s,background .2s;
+}
+.refresh-btn:active{transform:scale(.92);background:var(--bg)}
+.refresh-btn svg{width:22px;height:22px}
+.refresh-btn.spinning svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* ══════════ دسته‌بندی ══════════ */
 .categories{
   display:flex;gap:8px;
-  margin:22px -16px 0;
+  margin:18px -16px 0;
   padding:0 16px 4px;
   overflow-x:auto;
   scrollbar-width:none;
@@ -241,6 +301,19 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
 }
 .product-badge.out{
   background:#6b6b6b;color:#fff;
+}
+
+/* برچسب تخفیف */
+.discount-badge{
+  position:absolute;top:8px;left:8px;
+  padding:4px 9px;border-radius:99px;
+  font-size:10.5px;font-weight:800;
+  background:linear-gradient(135deg,#dc2626,#b8341e);
+  color:#fff;
+  box-shadow:0 3px 10px rgba(220,38,38,.45);
+  z-index:2;
+  font-family:'Lalezar','Vazirmatn',sans-serif;
+  letter-spacing:.3px;
 }
 
 .product-body{padding:12px 12px 14px}
@@ -371,7 +444,7 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
 }
 .nav-badge.show{display:flex}
 
-/* ══════════ Drawer (منوی کناری) ══════════ */
+/* ══════════ Drawer ══════════ */
 .drawer-overlay{
   position:fixed;inset:0;z-index:150;
   background:rgba(44,24,16,.5);
@@ -512,7 +585,7 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
 }
 .drawer-version{opacity:.6;font-size:10px}
 
-/* ══════════ Sheet (پنل کشویی) ══════════ */
+/* ══════════ Sheet ══════════ */
 .sheet-overlay{
   position:fixed;inset:0;z-index:200;
   background:rgba(44,24,16,.5);
@@ -577,6 +650,16 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
   box-shadow:0 4px 12px rgba(0,0,0,.15);
   z-index:2;
 }
+.detail-discount{
+  position:absolute;top:12px;left:12px;
+  padding:6px 12px;border-radius:99px;
+  font-size:11.5px;font-weight:800;
+  background:linear-gradient(135deg,#dc2626,#b8341e);
+  color:#fff;
+  box-shadow:0 4px 12px rgba(220,38,38,.5);
+  z-index:2;
+  font-family:'Lalezar','Vazirmatn',sans-serif;
+}
 
 .detail-body{padding:18px 20px 0}
 .detail-name{
@@ -604,12 +687,6 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
 .detail-old{
   font-size:13px;color:var(--text-soft);
   text-decoration:line-through;
-}
-.detail-discount{
-  margin-right:auto;
-  font-size:11px;font-weight:700;
-  background:var(--success);color:#fff;
-  padding:4px 10px;border-radius:99px;
 }
 
 .detail-desc{
@@ -754,7 +831,7 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
 .checkout-btn:active{transform:scale(.98)}
 .checkout-btn svg{width:22px;height:22px}
 
-/* ══════════ Toast (اصلاح‌شده) ══════════ */
+/* ══════════ Toast ══════════ */
 .toast{
   position:fixed;
   bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
