@@ -36,6 +36,7 @@ function init(){
   si.addEventListener('input',e=>{clearTimeout(st);st=setTimeout(()=>{searchQuery=e.target.value.trim().toLowerCase();sc.style.display=searchQuery?'grid':'none';renderProducts();},200);});
   sc.addEventListener('click',()=>{si.value='';searchQuery='';sc.style.display='none';renderProducts();si.focus();});
   if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+  handleProductHash();
   startAutoUpdate();
 }
 async function checkForUpdates(){try{const base=getRawBase();const vRes=await fetch(base+'version.json?_='+Date.now(),{cache:'no-store'});if(!vRes.ok)return false;const vData=await vRes.json();const sv=vData.v;const lv=localStorage.getItem('torshak.version');if(sv&&sv!==lv){await loadNewProducts(sv,base);localStorage.setItem('torshak.version',sv);return true;}return false;}catch(e){return false;}}
