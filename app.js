@@ -49,6 +49,8 @@ function init(){
   sc.addEventListener('click',()=>{si.value='';searchQuery='';sc.style.display='none';renderProducts();si.focus();});
   if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
   startAutoUpdate();
+  renderFeatured();
+  showWelcomeIfFirstTime();
 }
 
 async function checkForUpdates(){
