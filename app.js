@@ -1,349 +1,577 @@
-/* ═══════════════════════════════════════════════
-   ترشک بندری — منطق اصلی فروشگاه
-   ═══════════════════════════════════════════════ */
-
 /* ═══════════ ابزارها ═══════════ */
 const $ = id => document.getElementById(id);
-const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-const formatPrice = n => fa(Number(n || 0).toLocaleString('en-US'));
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
-  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-));
-const safeColor = c => /^#[0-9a-f]{3,8}$/i.test(c || '') ? c : '#b8341e';
-const safeUrl = u => /^(\.\/|\/|images\/|https?:\/\/)/i.test(u || '') ? u : null;
+const fa = n => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const formatPrice = n => fa(n.toLocaleString('en-US'));
 
-/* ═══════════ داده‌ها ═══════════ */
-let catalog = { shop: {}, categories: [], products: [] };
-let activeCat = 'all';
-let cart = {};            // { productId: qty }
-let sheetQty = 1;
-let sheetProduct = null;
+/* ═══════════ وضعیت ═══════════ */
+let cart = loadCart();
+let currentCategory = 'all';
+let currentProduct = null;
+let currentQty = 1;
+let searchQuery = '';
 
-function normalize(d) {
-  d = d || {};
-  const categories = Array.isArray(d.CATEGORIES) ? d.CATEGORIES.slice() : [];
-  if (!categories.some(c => c.id === 'all')) {
-    categories.unshift({ id: 'all', name: 'همه', emoji: '🍽️' });
+function loadCart(){
+  try{
+    const raw = localStorage.getItem('torshak.cart');
+    return raw ? JSON.parse(raw) : {};
+  }catch{ return {}; }
+}
+function saveCart(){
+  try{ localStorage.setItem('torshak.cart', JSON.stringify(cart)); }catch{}
+}
+function cartCount(){
+  return Object.values(cart).reduce((s, q) => s + q, 0);
+}
+function cartTotal(){
+  let t = 0;
+  for (const id in cart){
+    const p = PRODUCTS.find(p => p.id === id);
+    if (p) t += p.price * cart[id];
   }
-  return {
-    shop: d.SHOP || {},
-    categories,
-    products: Array.isArray(d.PRODUCTS) ? d.PRODUCTS : []
-  };
+  return t;
 }
 
-function loadCatalog() {
-  // اولویت با داده‌ای است که پنل مدیریت در localStorage ذخیره کرده
-  let d = {
-    SHOP: typeof SHOP !== 'undefined' ? SHOP : {},
-    CATEGORIES: typeof CATEGORIES !== 'undefined' ? CATEGORIES : [],
-    PRODUCTS: typeof PRODUCTS !== 'undefined' ? PRODUCTS : []
-  };
-  try {
-    const saved = JSON.parse(localStorage.getItem('torshak_data') || 'null');
-    if (saved && Array.isArray(saved.PRODUCTS)) d = saved;
-  } catch (e) { /* نادیده بگیر */ }
-  catalog = normalize(d);
-}
-
-/* ═══════════ سبد خرید ═══════════ */
-function loadCart() {
-  try { cart = JSON.parse(localStorage.getItem('torshak_cart') || '{}') || {}; }
-  catch (e) { cart = {}; }
-}
-function saveCart() {
-  localStorage.setItem('torshak_cart', JSON.stringify(cart));
-}
-function cartCount() {
-  return Object.values(cart).reduce((a, b) => a + b, 0);
-}
-function cartTotal() {
-  return Object.entries(cart).reduce((sum, [id, qty]) => {
-    const p = catalog.products.find(x => x.id === id);
-    return sum + (p ? Number(p.price) * qty : 0);
-  }, 0);
-}
-function addToCart(id, qty = 1) {
-  cart[id] = (cart[id] || 0) + qty;
-  if (cart[id] <= 0) delete cart[id];
-  saveCart(); updateBadge();
-}
-function setCartQty(id, qty) {
-  if (qty <= 0) delete cart[id]; else cart[id] = qty;
-  saveCart(); updateBadge(); renderCart();
-}
-function updateBadge() {
-  const n = cartCount();
-  const badge = $('navBadge');
-  badge.textContent = fa(n);
-  badge.classList.toggle('show', n > 0);
-}
-
-/* ═══════════ Toast ═══════════ */
-let toastTimer = null;
-function toast(msg, icon = '✅') {
-  const t = $('toast');
-  t.innerHTML = '<span class="toast-icon">' + icon + '</span>' + esc(msg);
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-/* ═══════════ رندر دسته‌بندی‌ها ═══════════ */
-function renderCategories() {
-  const pills = $('categories');
-  const drawer = $('drawerCats');
-  pills.innerHTML = '';
-  drawer.innerHTML = '';
-  catalog.categories.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-pill' + (c.id === activeCat ? ' active' : '');
-    btn.textContent = (c.emoji ? c.emoji + ' ' : '') + c.name;
-    btn.onclick = () => { activeCat = c.id; renderCategories(); renderProducts(); };
-    pills.appendChild(btn);
-
-    const dbtn = document.createElement('button');
-    dbtn.className = 'drawer-cat' + (c.id === activeCat ? ' active' : '');
-    dbtn.innerHTML = '<span class="drawer-cat-emoji">' + (c.emoji || '🍽️') + '</span>' + esc(c.name);
-    dbtn.onclick = () => { activeCat = c.id; renderCategories(); renderProducts(); closeDrawerFn(); scrollToProducts(); };
-    drawer.appendChild(dbtn);
-  });
-}
-
-/* ═══════════ رندر محصولات ═══════════ */
-function productMedia(p, cls) {
-  const url = safeUrl(p.img);
-  if (url) return '<div class="' + cls + '" style="background:#f3e7d3"><img src="' + esc(url) + '" alt="' + esc(p.name) + '" loading="lazy" onerror="this.parentNode.textContent=\'' + esc(p.emoji || '🫙') + '\'"></div>';
-  return '<div class="' + cls + '" style="background:' + safeColor(p.color) + '22">' + (p.emoji || '🫙') + '</div>';
-}
-
-function renderProducts() {
-  const grid = $('productsGrid');
-  const list = catalog.products.filter(p => activeCat === 'all' || p.cat === activeCat);
-  $('productsCount').textContent = fa(list.length) + ' محصول';
-  $('emptyState').style.display = list.length ? 'none' : 'block';
-  grid.innerHTML = '';
-
-  list.forEach((p, i) => {
-    const out = p.stock === false;
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.style.animationDelay = (i * 0.05) + 's';
-    card.innerHTML =
-      productMedia(p, 'product-img') +
-      (p.badge ? '<span class="product-badge' + (out ? ' out' : '') + '">' + (out ? 'ناموجود' : esc(p.badge)) + '</span>' : (out ? '<span class="product-badge out">ناموجود</span>' : '')) +
-      '<div class="product-body">' +
-        '<div class="product-name">' + esc(p.name) + '</div>' +
-        '<div class="product-unit">' + esc(p.unit || '') + '</div>' +
-        '<div class="product-price-row">' +
-          '<div class="product-prices">' +
-            (p.oldPrice ? '<span class="product-old">' + formatPrice(p.oldPrice) + '</span>' : '') +
-            '<span class="product-price">' + formatPrice(p.price) + '<span>تومان</span></span>' +
-          '</div>' +
-          '<button class="add-btn" aria-label="افزودن" ' + (out ? 'disabled' : '') + ' data-add="' + esc(p.id) + '">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' +
-          '</button>' +
-        '</div>' +
-      '</div>';
-    card.onclick = e => {
-      if (e.target.closest('[data-add]')) return;
-      openProductSheet(p);
-    };
-    grid.appendChild(card);
-  });
-
-  grid.querySelectorAll('[data-add]').forEach(btn => {
-    btn.onclick = () => {
-      addToCart(btn.dataset.add, 1);
-      toast('به سبد اضافه شد', '🛒');
-    };
-  });
-}
-
-/* ═══════════ شیت جزئیات محصول ═══════════ */
-function openProductSheet(p) {
-  sheetProduct = p;
-  sheetQty = 1;
-  const out = p.stock === false;
-  const discount = p.oldPrice && p.oldPrice > p.price
-    ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
-
-  $('productSheetContent').innerHTML =
-    '<div class="sheet-handle"></div>' +
-    '<div class="sheet-header">' +
-      '<h3>جزئیات محصول</h3>' +
-      '<button class="icon-close" id="closeProductSheet" aria-label="بستن">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
-      '</button>' +
-    '</div>' +
-    '<div class="product-detail">' +
-      productMedia(p, 'detail-img') +
-      '<div class="detail-body">' +
-        '<div class="detail-name">' + esc(p.name) + '</div>' +
-        '<div class="detail-unit">' + esc(p.unit || '') + (p.badge ? ' · ' + esc(p.badge) : '') + '</div>' +
-        '<div class="detail-price-row">' +
-          '<span class="detail-price">' + formatPrice(p.price) + '<span>تومان</span></span>' +
-          (p.oldPrice ? '<span class="detail-old">' + formatPrice(p.oldPrice) + '</span>' : '') +
-          (discount ? '<span class="detail-discount">٪' + fa(discount) + ' تخفیف</span>' : '') +
-        '</div>' +
-        (p.desc ? '<p class="detail-desc">' + esc(p.desc) + '</p>' : '') +
-        (p.ingredients ? '<div class="detail-ingredients"><h5>مواد تشکیل‌دهنده</h5><p>' + esc(p.ingredients) + '</p></div>' : '') +
-      '</div>' +
-      '<div class="detail-actions">' +
-        '<div class="qty-control">' +
-          '<button class="qty-btn" id="qtyPlus">+</button>' +
-          '<span class="qty-value" id="qtyValue">' + fa(1) + '</span>' +
-          '<button class="qty-btn" id="qtyMinus">−</button>' +
-        '</div>' +
-        '<button class="detail-add" id="detailAdd" ' + (out ? 'disabled' : '') + '>' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' +
-          (out ? 'ناموجود' : 'افزودن به سبد') +
-        '</button>' +
-      '</div>' +
-    '</div>';
-
-  openOverlay('productSheet');
-
-  $('closeProductSheet').onclick = () => closeOverlay('productSheet');
-  $('qtyPlus').onclick = () => { sheetQty++; $('qtyValue').textContent = fa(sheetQty); };
-  $('qtyMinus').onclick = () => { if (sheetQty > 1) { sheetQty--; $('qtyValue').textContent = fa(sheetQty); } };
-  if (!out) $('detailAdd').onclick = () => {
-    addToCart(p.id, sheetQty);
-    closeOverlay('productSheet');
-    toast('به سبد اضافه شد', '🛒');
-  };
-}
-
-/* ═══════════ شیت سبد خرید ═══════════ */
-function renderCart() {
-  const body = $('cartBody');
-  const footer = $('cartFooter');
-  const ids = Object.keys(cart);
-
-  if (!ids.length) {
-    footer.style.display = 'none';
-    body.innerHTML =
-      '<div class="cart-empty">' +
-        '<div class="cart-empty-icon">🛒</div>' +
-        '<p>سبد خرید شما خالی است</p>' +
-        '<small>از لیست محصولات، چیزی خوشمزه انتخاب کنید</small>' +
-      '</div>';
-    return;
+/* ═══════════ راه‌اندازی ═══════════ */
+function init(){
+  $('headerTagline').textContent = SHOP.tagline;
+  $('shopAddress').textContent = SHOP.address || '—';
+  if (SHOP.whatsapp){
+    const p = SHOP.whatsapp.replace(/^98/, '0').replace(/^0/, '');
+    $('shopPhoneDisplay').textContent = fa(p.replace(/(\d{4})(\d{3})(\d{4})/, '$1 $2 $3'));
   }
 
-  footer.style.display = 'block';
-  body.innerHTML = '';
-  ids.forEach(id => {
-    const p = catalog.products.find(x => x.id === id);
-    if (!p) return;
-    const qty = cart[id];
-    const row = document.createElement('div');
-    row.className = 'cart-item';
-    row.innerHTML =
-      productMedia(p, 'cart-item-img') +
-      '<div class="cart-item-info">' +
-        '<div class="cart-item-name">' + esc(p.name) + '</div>' +
-        '<div class="cart-item-price">' + formatPrice(p.price * qty) + ' تومان</div>' +
-      '</div>' +
-      '<div class="cart-item-qty">' +
-        '<button data-inc="' + esc(id) + '">+</button>' +
-        '<span>' + fa(qty) + '</span>' +
-        '<button data-dec="' + esc(id) + '">−</button>' +
-      '</div>';
-    body.appendChild(row);
-  });
-
-  body.querySelectorAll('[data-inc]').forEach(b => b.onclick = () => setCartQty(b.dataset.inc, cart[b.dataset.inc] + 1));
-  body.querySelectorAll('[data-dec]').forEach(b => b.onclick = () => setCartQty(b.dataset.dec, cart[b.dataset.dec] - 1));
-  $('cartTotal').textContent = formatPrice(cartTotal()) + ' تومان';
-}
-
-function checkout() {
-  if (!cartCount()) return;
-  const shop = catalog.shop;
-  const wa = String(shop.whatsapp || '').replace(/\D/g, '');
-  if (!wa) { toast('شماره واتساپ تنظیم نشده است', '⚠️'); return; }
-
-  let msg = 'سلام، سفارش من از ترشک بندری:\n\n';
-  Object.keys(cart).forEach(id => {
-    const p = catalog.products.find(x => x.id === id);
-    if (p) msg += '▪️ ' + p.name + ' × ' + fa(cart[id]) + ' — ' + formatPrice(p.price * cart[id]) + ' تومان\n';
-  });
-  msg += '\n💰 جمع کل: ' + formatPrice(cartTotal()) + ' تومان';
-
-  window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(msg), '_blank');
-}
-
-/* ═══════════ اورلی‌ها و دراور ═══════════ */
-function openOverlay(id) { $(id).classList.add('open'); }
-function closeOverlay(id) { $(id).classList.remove('open'); }
-function openDrawerFn() { $('drawerOverlay').classList.add('open'); $('drawer').classList.add('open'); }
-function closeDrawerFn() { $('drawerOverlay').classList.remove('open'); $('drawer').classList.remove('open'); }
-function scrollToProducts() {
-  const el = $('products');
-  if (el) el.scrollIntoView({ behavior: 'smooth' });
-}
-
-/* ═══════════ اطلاعات فروشگاه ═══════════ */
-function renderShopInfo() {
-  const s = catalog.shop;
-  if (s.tagline) $('headerTagline').textContent = s.tagline;
-  if (s.phone) $('shopPhoneDisplay').textContent = fa(s.phone);
-  if (s.address) $('shopAddress').textContent = s.address;
-}
-
-function openWhatsapp() {
-  const wa = String(catalog.shop.whatsapp || '').replace(/\D/g, '');
-  if (!wa) { toast('شماره واتساپ تنظیم نشده است', '⚠️'); return; }
-  window.open('https://wa.me/' + wa, '_blank');
-}
-function openInstagram() {
-  const ig = String(catalog.shop.instagram || '').replace(/^@/, '');
-  if (!ig) { toast('اینستاگرام تنظیم نشده است', '⚠️'); return; }
-  window.open('https://instagram.com/' + ig, '_blank');
-}
-function callPhone() {
-  const ph = String(catalog.shop.phone || catalog.shop.whatsapp || '').replace(/\D/g, '');
-  if (!ph) { toast('شماره تماس تنظیم نشده است', '⚠️'); return; }
-  location.href = 'tel:+' + (ph.startsWith('98') ? ph : '98' + ph.replace(/^0/, ''));
-}
-
-/* ═══════════ رویدادها ═══════════ */
-function bindEvents() {
-  $('hamburgerBtn').onclick = openDrawerFn;
-  $('closeDrawer').onclick = closeDrawerFn;
-  $('drawerOverlay').onclick = closeDrawerFn;
-
-  $('navHome').onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  $('navCart').onclick = () => { renderCart(); openOverlay('cartSheet'); };
-  $('navWhatsapp').onclick = openWhatsapp;
-  $('navInstagram').onclick = openInstagram;
-
-  $('drawerWhatsapp').onclick = () => { closeDrawerFn(); openWhatsapp(); };
-  $('drawerInstagram').onclick = () => { closeDrawerFn(); openInstagram(); };
-  $('drawerPhone').onclick = () => { closeDrawerFn(); callPhone(); };
-
-  $('closeCart').onclick = () => closeOverlay('cartSheet');
-  $('cartSheet').onclick = e => { if (e.target === $('cartSheet')) closeOverlay('cartSheet'); };
-  $('productSheet').onclick = e => { if (e.target === $('productSheet')) closeOverlay('productSheet'); };
-  $('checkoutBtn').onclick = checkout;
-}
-
-/* ═══════════ شروع ═══════════ */
-function init() {
-  loadCatalog();
-  loadCart();
-  renderShopInfo();
   renderCategories();
   renderProducts();
-  updateBadge();
-  bindEvents();
+  renderDrawerCats();
+  updateCartBadge();
 
-  if ('serviceWorker' in navigator) {
+  /* ── منوی پایین ── */
+  $('navHome').addEventListener('click', () => {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+  $('navCart').addEventListener('click', openCart);
+  $('navWhatsapp').addEventListener('click', contactWhatsapp);
+  $('navInstagram').addEventListener('click', contactInstagram);
+
+  /* ── Drawer ── */
+  $('hamburgerBtn').addEventListener('click', openDrawer);
+  $('closeDrawer').addEventListener('click', closeDrawer);
+  $('drawerOverlay').addEventListener('click', closeDrawer);
+  $('drawerWhatsapp').addEventListener('click', () => { closeDrawer(); contactWhatsapp(); });
+  $('drawerInstagram').addEventListener('click', () => { closeDrawer(); contactInstagram(); });
+  $('drawerPhone').addEventListener('click', () => { closeDrawer(); contactPhone(); });
+
+  /* ── سبد و شیت ── */
+  $('closeCart').addEventListener('click', closeCart);
+  $('cartSheet').addEventListener('click', e => {
+    if (e.target.id === 'cartSheet') closeCart();
+  });
+  $('productSheet').addEventListener('click', e => {
+    if (e.target.id === 'productSheet') closeProduct();
+  });
+  $('checkoutBtn').addEventListener('click', checkoutWhatsapp);
+
+  /* ── جستجو ── */
+  const searchInput = $('searchInput');
+  const searchClear = $('searchClear');
+  let searchTimer;
+  searchInput.addEventListener('input', e => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      searchClear.style.display = searchQuery ? 'grid' : 'none';
+      renderProducts();
+    }, 200);
+  });
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    searchClear.style.display = 'none';
+    renderProducts();
+    searchInput.focus();
+  });
+
+  /* ── دکمه رفرش ── */
+  $('refreshBtn').addEventListener('click', forceRefresh);
+
+  /* ── Service Worker ── */
+  if ('serviceWorker' in navigator){
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
     });
   }
 }
 
+/* ═══════════ دکمه رفرش ═══════════ */
+async function forceRefresh(){
+  const btn = $('refreshBtn');
+  if (btn.classList.contains('spinning')) return;
+
+  btn.classList.add('spinning');
+
+  try {
+    // پاک کردن products.js از همه کش‌ها
+    if ('caches' in window){
+      const keys = await caches.keys();
+      await Promise.all(keys.map(async k => {
+        const c = await caches.open(k);
+        const reqs = await c.keys();
+        await Promise.all(
+          reqs
+            .filter(r => r.url.includes('products.js'))
+            .map(r => c.delete(r))
+        );
+      }));
+    }
+
+    // آپدیت SW اگه نسخه جدید هست
+    if ('serviceWorker' in navigator){
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) await reg.update();
+    }
+
+    // لود محصولات به‌صورت تازه از سرور
+    const res = await fetch('products.js?_=' + Date.now(), { cache: 'no-store' });
+    if (res.ok){
+      const text = await res.text();
+      // اجرای محصولات جدید
+      const script = document.createElement('script');
+      script.textContent = text;
+      document.head.appendChild(script);
+      document.head.removeChild(script);
+
+      // رندر مجدد
+      renderCategories();
+      renderProducts();
+      renderDrawerCats();
+      updateCartBadge();
+      showToast('محصولات به‌روز شد', '✅');
+    } else {
+      showToast('خطا در دریافت محصولات', '❌');
+    }
+  } catch(e){
+    console.error(e);
+    // اگه آفلاین بود، فقط پیام نشون بده
+    if (!navigator.onLine){
+      showToast('اینترنت قطع است', '📡');
+    } else {
+      showToast('خطا در به‌روزرسانی', '❌');
+    }
+  } finally {
+    setTimeout(() => btn.classList.remove('spinning'), 500);
+  }
+}
+
+/* ═══════════ Drawer ═══════════ */
+const drawer = $('drawer');
+const drawerOverlay = $('drawerOverlay');
+
+function openDrawer(){
+  drawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer(){
+  drawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ═══════════ تماس ═══════════ */
+function contactWhatsapp(){
+  if (!SHOP.whatsapp) return;
+  const msg = encodeURIComponent('سلام، از اپ ترشک بندری مزاحم شدم 🌶️');
+  window.open(`https://wa.me/${SHOP.whatsapp}?text=${msg}`, '_blank');
+}
+function contactInstagram(){
+  if (!SHOP.instagram) return;
+  window.open(`https://instagram.com/${SHOP.instagram}`, '_blank');
+}
+function contactPhone(){
+  if (!SHOP.whatsapp) return;
+  const phone = SHOP.whatsapp.replace(/^98/, '0');
+  window.location.href = `tel:${phone}`;
+}
+
+/* ═══════════ دسته‌بندی ═══════════ */
+function setCategory(id){
+  currentCategory = id;
+  document.querySelectorAll('.cat-pill').forEach(x => {
+    x.classList.toggle('active', x.dataset.cat === id);
+  });
+  document.querySelectorAll('.drawer-cat').forEach(x => {
+    x.classList.toggle('active', x.dataset.cat === id);
+  });
+  renderProducts();
+}
+
+function renderCategories(){
+  const wrap = $('categories');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-pill' + (c.id === 'all' ? ' active' : '');
+    btn.dataset.cat = c.id;
+    btn.innerHTML = `<span>${c.emoji}</span><span>${c.name}</span>`;
+    btn.addEventListener('click', () => setCategory(c.id));
+    wrap.appendChild(btn);
+  });
+}
+
+function renderDrawerCats(){
+  const wrap = $('drawerCats');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'drawer-cat' + (c.id === currentCategory ? ' active' : '');
+    btn.dataset.cat = c.id;
+    btn.innerHTML = `<span class="drawer-cat-emoji">${c.emoji}</span><span>${c.name}</span>`;
+    btn.addEventListener('click', () => {
+      setCategory(c.id);
+      closeDrawer();
+      setTimeout(() => {
+        $('products').scrollIntoView({behavior:'smooth', block:'start'});
+      }, 350);
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+/* ═══════════ فیلتر محصولات ═══════════ */
+function getFilteredProducts(){
+  let list = currentCategory === 'all'
+    ? PRODUCTS
+    : PRODUCTS.filter(p => p.category === currentCategory);
+
+  if (searchQuery){
+    list = list.filter(p => {
+      const hay = [
+        p.name || '',
+        p.description || '',
+        p.ingredients || '',
+        p.unit || ''
+      ].join(' ').toLowerCase();
+      return hay.includes(searchQuery);
+    });
+  }
+
+  return list;
+}
+
+/* ═══════════ نمایش محصولات ═══════════ */
+function renderProducts(){
+  const grid = $('productsGrid');
+  const list = getFilteredProducts();
+
+  grid.innerHTML = '';
+
+  if (!list.length){
+    $('emptyState').style.display = 'block';
+    $('productsCount').textContent = '';
+    $('emptyText').textContent = searchQuery
+      ? `محصولی با «${searchQuery}» پیدا نشد`
+      : 'محصولی در این دسته پیدا نشد';
+    return;
+  }
+  $('emptyState').style.display = 'none';
+  $('productsCount').textContent = fa(list.length) + ' محصول';
+
+  list.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.animationDelay = (i * 0.04) + 's';
+
+    const hasDiscount = p.oldPrice && p.oldPrice > p.price;
+    const discountPct = hasDiscount ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+    const out = p.inStock === false;
+    const imgSrc = p.img || p.image;
+
+    card.innerHTML = `
+      <div class="product-img" style="background:${gradientFor(p.color)}">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${p.name}" loading="lazy">`
+          : `<span>${p.emoji || '🫙'}</span>`}
+        ${hasDiscount && !out ? `<span class="discount-badge">${fa(discountPct)}٪</span>` : ''}
+        ${p.featured ? `<span class="product-badge">پیشنهاد ویژه</span>` : ''}
+        ${out ? `<span class="product-badge out">ناموجود</span>` : ''}
+      </div>
+      <div class="product-body">
+        <div class="product-name">${p.name}</div>
+        <div class="product-unit">${p.unit || '—'}</div>
+        <div class="product-price-row">
+          <div class="product-prices">
+            ${hasDiscount ? `<span class="product-old">${formatPrice(p.oldPrice)}</span>` : ''}
+            <span class="product-price">${formatPrice(p.price)}<span>تومان</span></span>
+          </div>
+          <button class="add-btn" ${out ? 'disabled' : ''} aria-label="افزودن">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    card.addEventListener('click', e => {
+      if (e.target.closest('.add-btn')) return;
+      openProduct(p.id);
+    });
+
+    const addBtn = card.querySelector('.add-btn');
+    if (!out){
+      addBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        addToCart(p.id, 1);
+        bounceBtn(addBtn);
+      });
+    }
+
+    grid.appendChild(card);
+  });
+}
+
+function gradientFor(color){
+  const c = color || '#b8341e';
+  return `linear-gradient(135deg, ${c}22 0%, ${c}44 100%)`;
+}
+
+/* ═══════════ جزئیات محصول ═══════════ */
+function openProduct(id){
+  const p = PRODUCTS.find(p => p.id === id);
+  if (!p) return;
+  currentProduct = p;
+  currentQty = 1;
+
+  const hasDiscount = p.oldPrice && p.oldPrice > p.price;
+  const discountPct = hasDiscount ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+  const out = p.inStock === false;
+  const imgSrc = p.img || p.image;
+
+  $('productSheetContent').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div class="product-detail">
+      <div class="detail-img" style="background:${gradientFor(p.color)}">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${p.name}">`
+          : `<span>${p.emoji || '🫙'}</span>`}
+        ${hasDiscount && !out ? `<span class="detail-discount">${fa(discountPct)}٪ تخفیف</span>` : ''}
+        ${p.featured ? `<span class="detail-badge">⭐ پیشنهاد ویژه</span>` : ''}
+        ${out ? `<span class="detail-badge" style="background:#6b6b6b;color:#fff">ناموجود</span>` : ''}
+      </div>
+      <div class="detail-body">
+        <h2 class="detail-name">${p.name}</h2>
+        <div class="detail-unit">${p.unit || '—'}</div>
+
+        <div class="detail-price-row">
+          <span class="detail-price">${formatPrice(p.price)}<span>تومان</span></span>
+          ${hasDiscount ? `<span class="detail-old">${formatPrice(p.oldPrice)}</span>` : ''}
+        </div>
+
+        ${p.description ? `<p class="detail-desc">${p.description}</p>` : ''}
+
+        ${p.ingredients ? `
+          <div class="detail-ingredients">
+            <h5>🧂 مواد اولیه</h5>
+            <p>${p.ingredients}</p>
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="detail-actions">
+        <div class="qty-control">
+          <button class="qty-btn" id="qtyMinus" ${out ? 'disabled' : ''}>−</button>
+          <span class="qty-value" id="qtyValue">${fa(currentQty)}</span>
+          <button class="qty-btn" id="qtyPlus" ${out ? 'disabled' : ''}>+</button>
+        </div>
+        <button class="detail-add" id="detailAdd" ${out ? 'disabled' : ''}>
+          ${out ? 'ناموجود' : `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1"/>
+              <circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            افزودن به سبد
+          `}
+        </button>
+      </div>
+    </div>
+  `;
+
+  if (!out){
+    $('qtyMinus').addEventListener('click', () => {
+      if (currentQty > 1){ currentQty--; updateQtyUI(); }
+    });
+    $('qtyPlus').addEventListener('click', () => {
+      if (currentQty < 99){ currentQty++; updateQtyUI(); }
+    });
+    $('detailAdd').addEventListener('click', () => {
+      addToCart(p.id, currentQty);
+      closeProduct();
+      setTimeout(openCart, 250);
+    });
+  }
+
+  $('productSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateQtyUI(){
+  $('qtyValue').textContent = fa(currentQty);
+  $('qtyMinus').disabled = currentQty <= 1;
+}
+
+function closeProduct(){
+  $('productSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ═══════════ سبد خرید ═══════════ */
+function addToCart(id, qty){
+  cart[id] = (cart[id] || 0) + qty;
+  saveCart();
+  updateCartBadge();
+  showToast('به سبد اضافه شد', '🌶️');
+}
+
+function updateCartBadge(){
+  const count = cartCount();
+  const badge = $('navBadge');
+  const nav = $('navCart');
+  if (count > 0){
+    badge.textContent = fa(count);
+    badge.classList.add('show');
+    nav.classList.add('active');
+    setTimeout(() => nav.classList.remove('active'), 600);
+  } else {
+    badge.classList.remove('show');
+  }
+}
+
+function openCart(){
+  renderCart();
+  $('cartSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart(){
+  $('cartSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderCart(){
+  const body = $('cartBody');
+  const footer = $('cartFooter');
+  const ids = Object.keys(cart).filter(id => cart[id] > 0);
+
+  if (!ids.length){
+    body.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <p>سبد خرید خالیه</p>
+        <small>یه سر به محصولات ما بزن</small>
+      </div>
+    `;
+    footer.style.display = 'none';
+    return;
+  }
+
+  body.innerHTML = '';
+  footer.style.display = 'block';
+
+  ids.forEach(id => {
+    const p = PRODUCTS.find(p => p.id === id);
+    if (!p) return;
+    const qty = cart[id];
+    const imgSrc = p.img || p.image;
+
+    const row = document.createElement('div');
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <div class="cart-item-img" style="background:${gradientFor(p.color)}">
+        ${imgSrc ? `<img src="${imgSrc}" alt="">` : `<span>${p.emoji || '🫙'}</span>`}
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-price">${formatPrice(p.price)} × ${fa(qty)}</div>
+      </div>
+      <div class="cart-item-qty">
+        <button data-act="minus">−</button>
+        <span>${fa(qty)}</span>
+        <button data-act="plus">+</button>
+      </div>
+    `;
+
+    row.querySelector('[data-act="minus"]').addEventListener('click', () => {
+      cart[id]--;
+      if (cart[id] <= 0) delete cart[id];
+      saveCart();
+      updateCartBadge();
+      renderCart();
+    });
+    row.querySelector('[data-act="plus"]').addEventListener('click', () => {
+      cart[id]++;
+      saveCart();
+      updateCartBadge();
+      renderCart();
+    });
+
+    body.appendChild(row);
+  });
+
+  $('cartTotal').textContent = formatPrice(cartTotal()) + ' تومان';
+}
+
+/* ═══════════ ثبت سفارش با واتساپ ═══════════ */
+function checkoutWhatsapp(){
+  const ids = Object.keys(cart).filter(id => cart[id] > 0);
+  if (!ids.length) return;
+
+  let msg = `🌶️ *سفارش جدید از ${SHOP.name}*\n\n`;
+  msg += `📦 *محصولات:*\n`;
+
+  ids.forEach(id => {
+    const p = PRODUCTS.find(p => p.id === id);
+    if (!p) return;
+    const qty = cart[id];
+    const sub = p.price * qty;
+    msg += `• ${p.name} × ${fa(qty)} = ${formatPrice(sub)} تومان\n`;
+  });
+
+  msg += `\n💰 *جمع کل: ${formatPrice(cartTotal())} تومان*\n\n`;
+  msg += `📍 لطفاً آدرس و نحوه ارسال رو اعلام بفرمایید.`;
+
+  const url = `https://wa.me/${SHOP.whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+/* ═══════════ Toast ═══════════ */
+let toastTimer;
+function showToast(text, icon = '✓'){
+  const t = $('toast');
+  t.innerHTML = `<span class="toast-icon">${icon}</span><span>${text}</span>`;
+  clearTimeout(toastTimer);
+  t.classList.remove('show');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      t.classList.add('show');
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  });
+}
+
+/* ═══════════ انیمیشن دکمه ═══════════ */
+function bounceBtn(btn){
+  btn.style.transform = 'scale(1.25)';
+  setTimeout(() => { btn.style.transform = ''; }, 200);
+}
+
+/* ═══════════ شروع ═══════════ */
 document.addEventListener('DOMContentLoaded', init);
+
+/* ═══════════ اسکرول نرم ═══════════ */
+document.addEventListener('click', e => {
+  const link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  e.preventDefault();
+  const target = document.querySelector(link.getAttribute('href'));
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+});
