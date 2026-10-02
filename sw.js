@@ -1,19 +1,11 @@
-/* ترشک بندری — Service Worker
-   - کد و داده (html/js/json/css): اول شبکه، با تایم‌اوت ۵ ثانیه، بعد کش
-   - عکس و آیکون: اول کش
-   - فونت: اول کش
-   - پنل ادمین و صفحه بررسی: اصلاً دست نمی‌خوره */
-
 const CACHE = 'torshak-v9';
 const FONT_CACHE = 'torshak-fonts-v9';
-const NETWORK_TIMEOUT = 5000;
 
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
-  './products.js',
   './manifest.json',
   './icon.svg'
 ];
@@ -22,87 +14,92 @@ const FONT_URLS = [
   'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Lalezar&display=swap'
 ];
 
+/* فایل‌هایی که همیشه باید از شبکه بیایند (نه از کش) */
+const NETWORK_FIRST = ['products.js', 'version.json'];
+
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
     const c = await caches.open(CACHE);
-    await Promise.all(ASSETS.map(u =>
-      c.add(new Request(u, { cache: 'reload' })).catch(() => null)
-    ));
-    const f = await caches.open(FONT_CACHE);
-    await Promise.all(FONT_URLS.map(u => f.add(u).catch(() => null)));
-    await self.skipWaiting();
+    await Promise.all(ASSETS.map(u => c.add(u).catch(()=>{})));
+
+    const fc = await caches.open(FONT_CACHE);
+    for (const url of FONT_URLS){
+      try{
+        const res = await fetch(url, { mode:'cors' });
+        if (!res.ok) continue;
+        await fc.put(url, res.clone());
+        const css = await res.text();
+        const urls = [...css.matchAll(/url\((https:\/\/[^)]+\.(?:woff2?|ttf|otf))\)/g)].map(m=>m[1]);
+        await Promise.all(urls.map(u => fetch(u,{mode:'cors'}).then(r => r.ok && fc.put(u, r)).catch(()=>{})));
+      }catch{}
+    }
   })());
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys
-      .filter(k => k !== CACHE && k !== FONT_CACHE)
-      .map(k => caches.delete(k)));
+    await Promise.all(keys.filter(k => k!==CACHE && k!==FONT_CACHE).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
 
-const timeoutFetch = (req, ms) => new Promise((resolve, reject) => {
-  const t = setTimeout(() => reject(new Error('timeout')), ms);
-  fetch(req).then(r => { clearTimeout(t); resolve(r); },
-                 err => { clearTimeout(t); reject(err); });
-});
-
 self.addEventListener('fetch', e => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
+  if (e.request.method !== 'GET') return;
 
-  const url = new URL(req.url);
+  const url = new URL(e.request.url);
 
-  // پنل مدیریت، صفحه بررسی و درخواست‌های غیر GET دست نخورده بمانند
-  if (url.pathname.endsWith('/admin.html') || url.pathname.endsWith('/fix.html')) return;
-  if (!url.protocol.startsWith('http')) return;
+  // چک برای فایل‌های شبکه‌اول (products.js, version.json)
+  const isNetworkFirst = NETWORK_FIRST.some(name => url.pathname.endsWith('/' + name));
 
-  const isFont = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
-  const isImage = /\.(png|jpe?g|webp|gif|svg|ico)$/i.test(url.pathname);
-
-  // فونت و عکس: اول کش، بعد شبکه (و ذخیره در کش)
-  if (isFont || isImage) {
+  if (isNetworkFirst){
     e.respondWith((async () => {
-      const cacheName = isFont ? FONT_CACHE : CACHE;
-      const cached = await caches.match(req);
-      if (cached) return cached;
       try {
-        const res = await fetch(req);
-        if (res && res.ok) {
-          const c = await caches.open(cacheName);
-          c.put(req, res.clone());
+        const res = await fetch(e.request);
+        if (res && res.status === 200){
+          const cache = await caches.open(CACHE);
+          cache.put(e.request, res.clone()).catch(()=>{});
         }
         return res;
-      } catch (err) {
+      } catch (err){
+        const cached = await caches.match(e.request);
         return cached || Response.error();
       }
     })());
     return;
   }
 
-  // فقط درخواست‌های هم‌مبدا کش شوند
-  if (url.origin !== self.location.origin) return;
+  // فونت‌ها
+  const isFont =
+    e.request.url.includes('fonts.googleapis.com') ||
+    e.request.url.includes('fonts.gstatic.com') ||
+    /\.(woff2?|ttf|otf|eot)(\?|$)/.test(e.request.url);
 
-  // کد و داده: اول شبکه (با تایم‌اوت)، بعد کش
+  if (isFont){
+    e.respondWith((async () => {
+      const cache = await caches.open(FONT_CACHE);
+      const cached = await cache.match(e.request);
+      if (cached) return cached;
+      try{
+        const res = await fetch(e.request);
+        if (res && res.status === 200) cache.put(e.request, res.clone());
+        return res;
+      }catch{ return cached || Response.error(); }
+    })());
+    return;
+  }
+
+  // بقیه فایل‌ها — cache-first
   e.respondWith((async () => {
-    try {
-      const res = await timeoutFetch(new Request(req, { cache: 'no-cache' }), NETWORK_TIMEOUT);
-      if (res && res.ok) {
-        const c = await caches.open(CACHE);
-        c.put(req, res.clone());
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(e.request);
+    const network = fetch(e.request).then(res => {
+      if (res && res.status === 200 && res.type === 'basic'){
+        cache.put(e.request, res.clone()).catch(()=>{});
       }
       return res;
-    } catch (err) {
-      const cached = await caches.match(req);
-      if (cached) return cached;
-      if (req.mode === 'navigate') {
-        const home = await caches.match('./index.html');
-        if (home) return home;
-      }
-      return Response.error();
-    }
+    }).catch(()=>null);
+    return cached || (await network) || caches.match('./index.html');
   })());
 });
