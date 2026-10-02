@@ -1,7 +1,7 @@
 /* ترشک بندری — داده‌های فروشگاه (تولیدشده از پنل مدیریت) */
 
 const SHOP = {
-  "name": "ترشک بندری",
+  "name": "کافه ترشی",
   "tagline": "ترشی و ترشک خانگی بوشهر",
   "whatsapp": "989121234567",
   "instagram": "torshak_bandari",
@@ -232,5 +232,20 @@ const PRODUCTS = [
     "img": "images/img-muqn71up-oarg.jpg",
     "desc": "لواشک دست ساز انار درجه یک",
     "ingredients": "انار،نمک،سیب"
+  },
+  {
+    "id": "p-muqr31py",
+    "cat": "torshi",
+    "name": "مربای ترش",
+    "unit": "700",
+    "price": 258000,
+    "oldPrice": 300000,
+    "badge": "جدید",
+    "stock": true,
+    "emoji": "🫙",
+    "color": "#e8a33d",
+    "img": "images/img-muqr2odn-bsao.jpg",
+    "desc": "خیلی خوبه",
+    "ingredients": "مربا و ترشیجات"
   }
 ];
