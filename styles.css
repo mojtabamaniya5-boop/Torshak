@@ -149,3 +149,133 @@ main{padding:0 16px 20px;max-width:560px;margin:0 auto}
 .update-banner{position:fixed;top:calc(70px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);opacity:0;background:linear-gradient(135deg,#4a7c59,#2e7d32);color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:600;z-index:500;transition:all .4s;pointer-events:none;white-space:nowrap}
 .update-banner.show{transform:translate(-50%,0);opacity:1}
 @media (min-width:480px){.products-grid{gap:14px}.hero h2{font-size:34px}}
+/* ═══════════ بخش پیشنهاد ویژه ═══════════ */
+.featured-section{margin-top:22px}
+.featured-scroll{
+  display:flex;gap:12px;overflow-x:auto;
+  margin:0 -16px;padding:0 16px 8px;
+  scrollbar-width:none;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+}
+.featured-scroll::-webkit-scrollbar{display:none}
+.featured-card{
+  flex:0 0 158px;
+  scroll-snap-align:start;
+  background:var(--card);
+  border-radius:18px;
+  overflow:hidden;
+  border:1.5px solid var(--border);
+  box-shadow:var(--shadow-sm);
+  cursor:pointer;
+  position:relative;
+  transition:transform .2s,box-shadow .25s;
+  animation:cardIn .4s cubic-bezier(.22,1,.36,1) both;
+}
+.featured-card:active{transform:scale(.97)}
+.featured-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.featured-card .fc-img{
+  position:relative;
+  aspect-ratio:1/1;
+  display:grid;place-items:center;
+  font-size:56px;overflow:hidden;
+}
+.featured-card .fc-img img{width:100%;height:100%;object-fit:cover}
+.featured-card .fc-badge{
+  position:absolute;top:8px;right:8px;
+  padding:3px 9px;border-radius:99px;
+  font-size:9.5px;font-weight:800;
+  background:linear-gradient(135deg,#e8a33d,#b8341e);
+  color:#fff;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+  z-index:2;
+  font-family:'Lalezar','Vazirmatn',sans-serif;
+}
+.featured-card .fc-info{padding:10px 12px 12px}
+.featured-card .fc-name{
+  font-size:12.5px;font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:3px;
+}
+.featured-card .fc-price{
+  font-size:13px;font-weight:700;
+  color:var(--primary-dark);
+}
+.featured-card .fc-price span{font-size:9.5px;font-weight:500;margin-right:2px}
+.featured-card .fc-old{
+  font-size:10px;color:var(--text-soft);
+  text-decoration:line-through;margin-left:5px;
+}
+
+/* ═══════════ دکمه اشتراک‌گذاری ═══════════ */
+.share-row{
+  padding:0 20px;
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+}
+.share-btn{
+  flex:1;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  font-family:inherit;font-size:13px;font-weight:600;
+  color:var(--text);
+  cursor:pointer;
+  transition:all .2s;
+}
+.share-btn:active{transform:scale(.97);background:var(--bg)}
+.share-btn svg{
+  width:18px;height:18px;
+  color:var(--primary);
+}
+
+/* ═══════════ درباره ما (بهبود یافته) ═══════════ */
+.drawer-about{
+  text-align:center;
+  padding:18px 14px !important;
+}
+.about-icon{
+  font-size:40px;
+  margin-bottom:8px;
+  filter:drop-shadow(0 4px 12px rgba(184,52,30,.3));
+}
+.about-title{
+  font-family:'Lalezar','Vazirmatn',sans-serif;
+  font-size:17px;
+  color:var(--primary-dark);
+  margin-bottom:8px;
+  font-weight:400;
+}
+.about-text{
+  font-size:12.5px;
+  line-height:1.9;
+  color:var(--text-soft);
+  margin-bottom:12px;
+}
+.about-features{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.about-features span{
+  font-size:11px;
+  padding:5px 11px;
+  background:linear-gradient(135deg,#fef1e4,#fbe0d2);
+  color:var(--primary-dark);
+  border-radius:99px;
+  font-weight:600;
+}
+
+/* ═══════════ پیام خوش‌آمد (Toast ویژه) ═══════════ */
+.toast.welcome{
+  background:linear-gradient(135deg,#b8341e,#8b2415);
+  box-shadow:0 12px 30px rgba(184,52,30,.4);
+  font-size:14px;
+  padding:14px 26px;
+}
+
+
