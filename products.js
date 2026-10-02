@@ -217,5 +217,20 @@ const PRODUCTS = [
     "img": "images/img-muq3j01k-ps6v.jpg",
     "desc": "این خیارشور خیلی ترش است",
     "ingredients": "نمک،فلفل"
+  },
+  {
+    "id": "p-muqn747y",
+    "cat": "lavashak",
+    "name": "لواشک انار",
+    "unit": "200",
+    "price": 25000,
+    "oldPrice": 35000,
+    "badge": "جدید",
+    "stock": true,
+    "emoji": "🫙",
+    "color": "#e8a33d",
+    "img": "images/img-muqn71up-oarg.jpg",
+    "desc": "لواشک دست ساز انار درجه یک",
+    "ingredients": "انار،نمک،سیب"
   }
 ];
