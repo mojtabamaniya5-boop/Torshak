@@ -234,18 +234,18 @@ const PRODUCTS = [
     "ingredients": "انار،نمک،سیب"
   },
   {
-    "id": "p-muqr31py",
-    "cat": "torshi",
-    "name": "مربای ترش",
-    "unit": "700",
-    "price": 258000,
-    "oldPrice": 300000,
-    "badge": "جدید",
+    "id": "p-muqrfptp",
+    "cat": "mahi",
+    "name": "سالاد فصل",
+    "unit": "500",
+    "price": 250,
+    "oldPrice": 380,
+    "badge": "فوری",
     "stock": true,
     "emoji": "🫙",
     "color": "#e8a33d",
-    "img": "images/img-muqr2odn-bsao.jpg",
-    "desc": "خیلی خوبه",
-    "ingredients": "مربا و ترشیجات"
+    "img": "images/img-muqreq8d-pzco.jpg",
+    "desc": "بهترین سالاد",
+    "ingredients": "سالاد"
   }
 ];
