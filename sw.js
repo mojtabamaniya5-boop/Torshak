@@ -1,5 +1,5 @@
-const CACHE='torshak-v14';
-const FONT_CACHE='torshak-fonts-v14';
+const CACHE='torshak-v15';
+const FONT_CACHE='torshak-fonts-v15';
 const ASSETS=['./','./index.html','./styles.css','./auth.css','./app.js','./auth.js','./manifest.json','./icon.svg'];
 const FONT_URLS=['https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Lalezar&display=swap'];
 const NETWORK_FIRST=['products.js','version.json','admin.html'];
