@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>آپدیت - ثبت‌نام و پنل مشتری</title>
+<title>آپدیت روبیکا و بله</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -32,8 +32,8 @@ button:disabled{opacity:.5}
 </head>
 <body>
 <div class="box">
-  <h1>🚀 آپدیت پنل مشتری</h1>
-  <p class="sub">ثبت‌نام، ورود، تاریخچه سفارش، ثبت سفارش در دیتابیس</p>
+  <h1>🚀 آپدیت روبیکا و بله</h1>
+  <p class="sub">دکمه‌های روبیکا و بله جای واتساپ + اطلاعات فروشگاه</p>
   <div class="note">⚠️ اطلاعات فقط روی گوشی خودت ذخیره می‌شه.</div>
   <div id="form">
     <label>نام کاربری گیت‌هاب</label>
@@ -52,420 +52,154 @@ button:disabled{opacity:.5}
   </div>
 </div>
 
-<textarea id="f_authcss" style="display:none">
-/* پنل مشتری و ثبت‌نام */
-.user-btn{width:44px;height:44px;flex-shrink:0;border-radius:13px;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;color:var(--primary-dark);box-shadow:var(--shadow-sm);position:relative}
-.user-btn svg{width:22px;height:22px}
-.user-btn.logged{background:linear-gradient(135deg,#4a7c59,#2e7d32);color:#fff;border-color:transparent}
-.user-btn .dot{position:absolute;top:-2px;left:-2px;width:12px;height:12px;border-radius:50%;background:#16a34a;border:2px solid var(--bg);display:none}
-.user-btn.logged .dot{display:block}
+<textarea id="f_products" style="display:none">
+/* ═══════════════════════════════════════════
+   اطلاعات فروشگاه — کافه ترشی
+   ═══════════════════════════════════════════ */
 
-.auth-tabs{display:flex;gap:6px;padding:6px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:6px 20px 14px}
-.auth-tab{flex:1;padding:10px;background:transparent;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text-soft);cursor:pointer}
-.auth-tab.active{background:var(--primary);color:#fff}
-.auth-form{padding:0 20px 20px}
-.auth-form .f{margin-bottom:12px}
-.auth-form label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
-.auth-form input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;background:var(--bg);outline:none;direction:ltr;text-align:left}
-.auth-form input:focus{border-color:var(--primary);background:#fff}
-.auth-form button{width:100%;padding:14px;border:none;border-radius:13px;background:var(--primary);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px}
-.auth-form button:disabled{opacity:.5}
-.auth-form .err{background:#fdecec;color:#dc2626;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.7;margin-bottom:10px;display:none}
-.auth-form .err.show{display:block}
-.auth-form .swap{text-align:center;font-size:12.5px;color:var(--text-soft);margin-top:14px}
-.auth-form .swap a{color:var(--primary);font-weight:700;cursor:pointer;text-decoration:underline}
+var SHOP = {
+  name: 'کافه ترشی',
+  tagline: 'ترشی و خیارشور خونگی',
+  phone: '09917756908',
+  rubika: 'forosh48',
+  bale: 'forosh48',
+  instagram: 'cofetorshi.ir'
+};
 
-.profile{padding:0 0 20px}
-.profile-head{padding:18px 20px;text-align:center;border-bottom:1px dashed var(--border);margin-bottom:14px}
-.profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#4a7c59,#2e7d32);display:grid;place-items:center;color:#fff;font-size:28px;font-weight:700;margin:0 auto 10px;box-shadow:0 8px 20px -6px rgba(46,125,50,.5)}
-.profile-name{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:20px;color:var(--primary-dark);margin-bottom:4px}
-.profile-phone{font-size:13px;color:var(--text-soft);direction:ltr}
-.profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:16px}
-.profile-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
-.profile-stat .num{font-family:'Lalezar',sans-serif;font-size:22px;color:var(--primary);display:block;margin-bottom:4px}
-.profile-stat .lbl{font-size:11px;color:var(--text-soft)}
-.profile-actions{padding:0 20px;display:flex;flex-direction:column;gap:8px}
-.paction-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;text-align:right}
-.paction-btn svg{width:20px;height:20px;color:var(--primary);flex-shrink:0}
-.paction-btn.logout{color:#dc2626;border-color:#fecaca;background:#fef2f2}
-.paction-btn.logout svg{color:#dc2626}
+var CATEGORIES = [
+  { id: 'all',        name: 'همه',     emoji: '🍽️' },
+  { id: 'torshi',     name: 'ترشی',    emoji: '🌶️' },
+  { id: 'khyarshoor', name: 'خیارشور', emoji: '🥒' },
+  { id: 'lavashak',   name: 'لواشک',   emoji: '🍑' }
+];
 
-.orders-list{padding:14px 20px}
-.order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
-.order-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--border)}
-.order-id{font-size:12px;color:var(--text-soft);font-weight:600}
-.order-date{font-size:11px;color:var(--text-soft)}
-.order-status{padding:3px 10px;border-radius:99px;font-size:10.5px;font-weight:700}
-.order-status.pending{background:#fef3c7;color:#92400e}
-.order-status.confirmed{background:#dbeafe;color:#1e40af}
-.order-status.sent{background:#e0e7ff;color:#3730a3}
-.order-status.delivered{background:#d1fae5;color:#065f46}
-.order-items{font-size:12.5px;line-height:1.9;color:var(--text);margin-bottom:8px}
-.order-total{font-size:14px;font-weight:800;color:var(--primary-dark);text-align:left}
-.orders-empty{text-align:center;padding:40px 20px;color:var(--text-soft)}
-.orders-empty-icon{font-size:52px;opacity:.5;margin-bottom:12px}
-
-.checkout-alt{width:100%;height:50px;border-radius:14px;border:1.5px solid var(--primary);background:#fff;color:var(--primary);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
-.checkout-alt svg{width:20px;height:20px}
-.checkout-alt:disabled{opacity:.5}
+var PRODUCTS = [
+  {
+    id: 'torshi-bandari',
+    name: 'ترشی بندری',
+    category: 'torshi',
+    price: 45000,
+    oldPrice: 60000,
+    unit: 'ظرف ۵۰۰ گرمی',
+    emoji: '🌶️',
+    color: '#b8341e',
+    description: 'ترشی اصیل بندری با ادویه‌های مخصوص و سیر تازه.',
+    ingredients: 'سیر، فلفل، ادویه بندری، سرکه طبیعی',
+    featured: true,
+    inStock: true
+  },
+  {
+    id: 'khyarshoor-khanegi',
+    name: 'خیارشور خونگی',
+    category: 'khyarshoor',
+    price: 35000,
+    unit: 'ظرف ۵۰۰ گرمی',
+    emoji: '🥒',
+    color: '#4a7c59',
+    description: 'خیارشور ترش و ترد، با ترخون و سیر تازه.',
+    ingredients: 'خیار، سرکه، ترخون، سیر، نمک دریا',
+    featured: true,
+    inStock: true
+  },
+  {
+    id: 'lavashak-alu',
+    name: 'لواشک آلو',
+    category: 'lavashak',
+    price: 30000,
+    unit: 'بسته ۲۵۰ گرمی',
+    emoji: '🍑',
+    color: '#c0392b',
+    description: 'لواشک آلو با طعم ترش و ملس.',
+    ingredients: 'آلو، نمک، ادویه مخصوص',
+    featured: false,
+    inStock: true
+  }
+];
 </textarea>
 
-<textarea id="f_authjs" style="display:none">
-/* ═══════════ API ═══════════ */
-var API_URL = 'http://194.146.69.210';
-
-/* ═══════════ وضعیت ═══════════ */
-var currentUser = null;
-var authToken = null;
-
-function loadAuth(){
-  try{
-    var u = localStorage.getItem('torshak.user');
-    var t = localStorage.getItem('torshak.token');
-    if (u && t){ currentUser = JSON.parse(u); authToken = t; }
-  }catch(e){}
+<textarea id="f_app" style="display:none">
+const $ = id => document.getElementById(id);
+const fa = n => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const formatPrice = n => fa(n.toLocaleString('en-US'));
+let cart = loadCart();
+let currentCategory = 'all';
+let currentProduct = null;
+let currentQty = 1;
+let searchQuery = '';
+let checkInterval = null;
+let toastTimer = null;
+function loadCart(){try{const raw=localStorage.getItem('torshak.cart');return raw?JSON.parse(raw):{};}catch{return {};}}
+function saveCart(){try{localStorage.setItem('torshak.cart',JSON.stringify(cart));}catch{}}
+function cartCount(){return Object.values(cart).reduce((s,q)=>s+q,0);}
+function cartTotal(){let t=0;for(const id in cart){const p=PRODUCTS.find(p=>p.id===id);if(p)t+=p.price*cart[id];}return t;}
+function getRawBase(){const host=location.hostname;if(host.endsWith('.github.io')){const user=host.replace('.github.io','');const parts=location.pathname.split('/').filter(Boolean);const repo=parts[0]||'';if(user&&repo){return 'https://raw.githubusercontent.com/'+user+'/'+repo+'/main/';}}return './';}
+function init(){
+  $('headerTagline').textContent=SHOP.tagline;
+  $('shopAddress').textContent=SHOP.address||'بوشهر (فروش مجازی)';
+  if(SHOP.phone){$('shopPhoneDisplay').textContent=fa(SHOP.phone.replace(/^98/,'0').replace(/^0/,'').replace(/(\d{4})(\d{3})(\d{4})/,'$1 $2 $3'));}
+  renderCategories();renderProducts();renderDrawerCats();updateCartBadge();renderFeatured();showWelcomeIfFirstTime();
+  $('navHome').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  $('navCart').addEventListener('click',openCart);
+  $('navRubika').addEventListener('click',contactRubika);
+  $('navBale').addEventListener('click',contactBale);
+  $('hamburgerBtn').addEventListener('click',openDrawer);
+  $('closeDrawer').addEventListener('click',closeDrawer);
+  $('drawerOverlay').addEventListener('click',closeDrawer);
+  $('drawerRubika').addEventListener('click',()=>{closeDrawer();contactRubika();});
+  $('drawerBale').addEventListener('click',()=>{closeDrawer();contactBale();});
+  $('drawerInstagram').addEventListener('click',()=>{closeDrawer();contactInstagram();});
+  $('drawerPhone').addEventListener('click',()=>{closeDrawer();contactPhone();});
+  $('closeCart').addEventListener('click',closeCart);
+  $('cartSheet').addEventListener('click',e=>{if(e.target.id==='cartSheet')closeCart();});
+  $('productSheet').addEventListener('click',e=>{if(e.target.id==='productSheet')closeProduct();});
+  $('checkoutBtn').addEventListener('click',checkoutRubika);
+  const si=$('searchInput'),sc=$('searchClear');let st;
+  si.addEventListener('input',e=>{clearTimeout(st);st=setTimeout(()=>{searchQuery=e.target.value.trim().toLowerCase();sc.style.display=searchQuery?'grid':'none';renderProducts();},200);});
+  sc.addEventListener('click',()=>{si.value='';searchQuery='';sc.style.display='none';renderProducts();si.focus();});
+  if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+  startAutoUpdate();
+  handleProductHash();
+  window.addEventListener('hashchange',handleProductHash);
 }
-function saveAuth(user, token){
-  currentUser = user; authToken = token;
-  localStorage.setItem('torshak.user', JSON.stringify(user));
-  localStorage.setItem('torshak.token', token);
-}
-function clearAuth(){
-  currentUser = null; authToken = null;
-  localStorage.removeItem('torshak.user');
-  localStorage.removeItem('torshak.token');
-}
-
-/* ═══════════ API Helper ═══════════ */
-function api(path, opts){
-  opts = opts || {};
-  var headers = { 'Content-Type': 'application/json' };
-  if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
-  if (opts.headers){
-    for (var k in opts.headers) headers[k] = opts.headers[k];
-  }
-  return fetch(API_URL + path, {
-    method: opts.method || 'GET',
-    headers: headers,
-    body: opts.body ? JSON.stringify(opts.body) : undefined
-  }).then(function(res){
-    return res.json().catch(function(){ return {}; }).then(function(data){
-      if (!res.ok) throw new Error(data.error || 'خطا در ارتباط');
-      return data;
-    });
-  });
-}
-
-/* ═══════════ Toast Helper ═══════════ */
-function showAuthToast(msg, icon){
-  if (typeof showToast === 'function') showToast(msg, icon || '✓');
-}
-
-/* ═══════════ UI کاربر ═══════════ */
-function updateUserUI(){
-  var btn = document.getElementById('userBtn');
-  if (!btn) return;
-  if (currentUser){
-    btn.classList.add('logged');
-    btn.title = currentUser.name || currentUser.phone;
-  } else {
-    btn.classList.remove('logged');
-    btn.title = 'ورود / ثبت‌نام';
-  }
-}
-
-/* ═══════════ باز کردن شیت ═══════════ */
-function openAuthSheet(){
-  var sheet = document.getElementById('authSheet');
-  renderAuthBody();
-  sheet.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeAuthSheet(){
-  var sheet = document.getElementById('authSheet');
-  sheet.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-/* ═══════════ رندر محتوای شیت ═══════════ */
-function renderAuthBody(){
-  var body = document.getElementById('authBody');
-  var title = document.getElementById('authTitle');
-  if (currentUser){
-    title.textContent = 'حساب من';
-    body.innerHTML = renderProfileHTML();
-    bindProfileEvents();
-  } else {
-    title.textContent = 'ورود / ثبت‌نام';
-    body.innerHTML = renderAuthFormHTML();
-    bindAuthFormEvents();
-  }
-}
-
-function renderAuthFormHTML(){
-  return '' +
-    '<div class="auth-tabs">' +
-      '<button class="auth-tab active" data-atab="login">ورود</button>' +
-      '<button class="auth-tab" data-atab="register">ثبت‌نام</button>' +
-    '</div>' +
-    '<div class="auth-form" id="authFormWrap">' +
-      '<div class="err" id="authErr"></div>' +
-      '<div id="authFormInner"></div>' +
-    '</div>';
-}
-
-function renderLoginForm(){
-  return '' +
-    '<div class="f"><label>شماره موبایل</label><input type="tel" id="authPhone" dir="ltr" placeholder="09xxxxxxxxx" inputmode="numeric"></div>' +
-    '<div class="f"><label>رمز عبور</label><input type="password" id="authPass" dir="ltr" placeholder="••••"></div>' +
-    '<button id="doLoginBtn">ورود به حساب</button>' +
-    '<div class="swap">حساب نداری؟ <a id="goRegister">ثبت‌نام کن</a></div>';
-}
-
-function renderRegisterForm(){
-  return '' +
-    '<div class="f"><label>نام</label><input type="text" id="authName" placeholder="اسم شما"></div>' +
-    '<div class="f"><label>شماره موبایل</label><input type="tel" id="authPhone" dir="ltr" placeholder="09xxxxxxxxx" inputmode="numeric"></div>' +
-    '<div class="f"><label>رمز عبور (حداقل ۴ رقم)</label><input type="password" id="authPass" dir="ltr" placeholder="••••"></div>' +
-    '<button id="doRegisterBtn">ثبت‌نام</button>' +
-    '<div class="swap">حساب داری؟ <a id="goLogin">وارد شو</a></div>';
-}
-
-function renderProfileHTML(){
-  var initial = (currentUser.name || currentUser.phone || '؟').charAt(0);
-  var phoneDisplay = (currentUser.phone || '').replace(/(\d{4})(\d{3})(\d{4})/, '$1 $2 $3');
-  return '' +
-    '<div class="profile">' +
-      '<div class="profile-head">' +
-        '<div class="profile-avatar">' + initial + '</div>' +
-        '<div class="profile-name">' + (currentUser.name || 'کاربر') + '</div>' +
-        '<div class="profile-phone">' + phoneDisplay + '</div>' +
-      '</div>' +
-      '<div class="profile-stats">' +
-        '<div class="profile-stat"><span class="num" id="statOrders">۰</span><span class="lbl">سفارش</span></div>' +
-        '<div class="profile-stat"><span class="num" id="statTotal">۰</span><span class="lbl">مجموع خرید (تومان)</span></div>' +
-      '</div>' +
-      '<div class="profile-actions">' +
-        '<button class="paction-btn" id="myOrdersBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>سفارش‌های من</button>' +
-        '<button class="paction-btn logout" id="logoutBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>خروج از حساب</button>' +
-      '</div>' +
-    '</div>';
-}
-
-function bindAuthFormEvents(){
-  document.querySelectorAll('.auth-tab').forEach(function(t){
-    t.onclick = function(){
-      document.querySelectorAll('.auth-tab').forEach(function(x){ x.classList.remove('active'); });
-      t.classList.add('active');
-      var inner = document.getElementById('authFormInner');
-      if (t.dataset.atab === 'login'){
-        inner.innerHTML = renderLoginForm();
-        bindLoginForm();
-      } else {
-        inner.innerHTML = renderRegisterForm();
-        bindRegisterForm();
-      }
-      document.getElementById('authErr').classList.remove('show');
-    };
-  });
-  // پیش‌فرض: ورود
-  document.getElementById('authFormInner').innerHTML = renderLoginForm();
-  bindLoginForm();
-}
-
-function bindLoginForm(){
-  var goReg = document.getElementById('goRegister');
-  if (goReg) goReg.onclick = function(){ document.querySelector('.auth-tab[data-atab="register"]').click(); };
-  var btn = document.getElementById('doLoginBtn');
-  if (btn) btn.onclick = function(){
-    var phone = document.getElementById('authPhone').value.trim();
-    var pass = document.getElementById('authPass').value;
-    if (!phone || !pass){ showErr('شماره و رمز را وارد کن'); return; }
-    btn.disabled = true; btn.textContent = 'در حال ورود...';
-    api('/api/auth/login', { method: 'POST', body: { phone: phone, password: pass } })
-      .then(function(data){
-        saveAuth(data.user, data.token);
-        updateUserUI();
-        showAuthToast('خوش آمدی ' + (data.user.name || ''), '👋');
-        renderAuthBody();
-      })
-      .catch(function(err){
-        showErr(err.message);
-        btn.disabled = false; btn.textContent = 'ورود به حساب';
-      });
-  };
-}
-
-function bindRegisterForm(){
-  var goLog = document.getElementById('goLogin');
-  if (goLog) goLog.onclick = function(){ document.querySelector('.auth-tab[data-atab="login"]').click(); };
-  var btn = document.getElementById('doRegisterBtn');
-  if (btn) btn.onclick = function(){
-    var name = document.getElementById('authName').value.trim();
-    var phone = document.getElementById('authPhone').value.trim();
-    var pass = document.getElementById('authPass').value;
-    if (!phone || !pass){ showErr('شماره و رمز را وارد کن'); return; }
-    if (pass.length < 4){ showErr('رمز باید حداقل ۴ رقم باشد'); return; }
-    btn.disabled = true; btn.textContent = 'در حال ثبت‌نام...';
-    api('/api/auth/register', { method: 'POST', body: { phone: phone, name: name, password: pass } })
-      .then(function(data){
-        saveAuth(data.user, data.token);
-        updateUserUI();
-        showAuthToast('ثبت‌نام موفق! خوش آمدی', '🎉');
-        renderAuthBody();
-      })
-      .catch(function(err){
-        showErr(err.message);
-        btn.disabled = false; btn.textContent = 'ثبت‌نام';
-      });
-  };
-}
-
-function showErr(msg){
-  var e = document.getElementById('authErr');
-  if (!e) return;
-  e.textContent = msg;
-  e.classList.add('show');
-}
-
-function bindProfileEvents(){
-  var logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) logoutBtn.onclick = function(){
-    if (confirm('از حساب خارج می‌شوی؟')){
-      clearAuth();
-      updateUserUI();
-      showAuthToast('خارج شدی', '👋');
-      renderAuthBody();
-    }
-  };
-  var ordersBtn = document.getElementById('myOrdersBtn');
-  if (ordersBtn) ordersBtn.onclick = function(){
-    openOrdersSheet();
-  };
-  // بارگذاری آمار
-  loadStats();
-}
-
-function loadStats(){
-  api('/api/orders').then(function(orders){
-    var s1 = document.getElementById('statOrders');
-    var s2 = document.getElementById('statTotal');
-    if (s1) s1.textContent = fa(orders.length);
-    if (s2){
-      var total = orders.reduce(function(s, o){ return s + (o.total || 0); }, 0);
-      s2.textContent = fa(total.toLocaleString('en-US'));
-    }
-  }).catch(function(){});
-}
-
-/* ═══════════ سفارش‌ها ═══════════ */
-function openOrdersSheet(){
-  var sheet = document.getElementById('ordersSheet');
-  document.getElementById('ordersBody').innerHTML = '<div class="orders-empty"><div class="orders-empty-icon">⏳</div><p>در حال بارگذاری...</p></div>';
-  sheet.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  api('/api/orders').then(function(orders){
-    renderOrders(orders);
-  }).catch(function(err){
-    document.getElementById('ordersBody').innerHTML = '<div class="orders-empty"><div class="orders-empty-icon">❌</div><p>' + err.message + '</p></div>';
-  });
-}
-function closeOrdersSheet(){
-  document.getElementById('ordersSheet').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function renderOrders(orders){
-  var body = document.getElementById('ordersBody');
-  if (!orders.length){
-    body.innerHTML = '<div class="orders-empty"><div class="orders-empty-icon">📦</div><p>هنوز سفارشی ثبت نکردی</p><small style="font-size:11.5px;opacity:.7">اولین سفارشت رو ثبت کن</small></div>';
-    return;
-  }
-  var statusMap = { pending: 'در انتظار تأیید', confirmed: 'تأیید شده', sent: 'ارسال شده', delivered: 'تحویل داده شده' };
-  var html = '<div class="orders-list">';
-  orders.forEach(function(o){
-    var date = new Date(o.created_at);
-    var dateStr = date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'short', day: 'numeric' });
-    var items = [];
-    try { items = JSON.parse(o.items); } catch(e){}
-    var itemsText = items.map(function(it){ return '• ' + it.name + ' × ' + it.qty; }).join('<br>');
-    html += '<div class="order-card">' +
-      '<div class="order-head">' +
-        '<div><div class="order-id">سفارش #' + o.id + '</div><div class="order-date">' + dateStr + '</div></div>' +
-        '<div class="order-status ' + (o.status || 'pending') + '">' + (statusMap[o.status] || 'در انتظار') + '</div>' +
-      '</div>' +
-      '<div class="order-items">' + (itemsText || '—') + '</div>' +
-      '<div class="order-total">' + fa((o.total || 0).toLocaleString('en-US')) + ' تومان</div>' +
-    '</div>';
-  });
-  html += '</div>';
-  body.innerHTML = html;
-}
-
-/* ═══════════ ثبت سفارش ═══════════ */
-function submitOrderToApi(){
-  if (!currentUser){
-    showAuthToast('اول وارد شو', '🔐');
-    closeCart();
-    setTimeout(openAuthSheet, 300);
-    return;
-  }
-  var ids = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
-  if (!ids.length){ showAuthToast('سبد خالی است', '🛒'); return; }
-
-  var items = ids.map(function(id){
-    var p = PRODUCTS.find(function(x){ return x.id === id; });
-    return { id: id, name: p ? p.name : '', price: p ? p.price : 0, qty: cart[id] };
-  });
-  var total = cartTotal();
-
-  var btn = document.getElementById('checkoutApiBtn');
-  if (btn){ btn.disabled = true; btn.textContent = 'در حال ثبت...'; }
-
-  api('/api/orders', {
-    method: 'POST',
-    body: { items: items, total: total, address: '', note: '' }
-  }).then(function(order){
-    showAuthToast('سفارش #' + order.id + ' ثبت شد!', '✅');
-    cart = {}; saveCart(); updateCartBadge(); closeCart();
-    if (btn){ btn.disabled = false; btn.textContent = 'ثبت سفارش در سیستم'; }
-  }).catch(function(err){
-    showAuthToast(err.message, '❌');
-    if (btn){ btn.disabled = false; btn.textContent = 'ثبت سفارش در سیستم'; }
-  });
-}
-
-/* ═══════════ راه‌اندازی ═══════════ */
-function initAuth(){
-  loadAuth();
-  updateUserUI();
-  var btn = document.getElementById('userBtn');
-  if (btn) btn.onclick = openAuthSheet;
-  var closeAuth = document.getElementById('closeAuth');
-  if (closeAuth) closeAuth.onclick = closeAuthSheet;
-  var authSheet = document.getElementById('authSheet');
-  if (authSheet) authSheet.onclick = function(e){ if (e.target === authSheet) closeAuthSheet(); };
-  var closeOrders = document.getElementById('closeOrders');
-  if (closeOrders) closeOrders.onclick = closeOrdersSheet;
-  var ordersSheet = document.getElementById('ordersSheet');
-  if (ordersSheet) ordersSheet.onclick = function(e){ if (e.target === ordersSheet) closeOrdersSheet(); };
-  var apiBtn = document.getElementById('checkoutApiBtn');
-  if (apiBtn) apiBtn.onclick = submitOrderToApi;
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(initAuth, 100);
-});
-</textarea>
-
-<textarea id="f_sw" style="display:none">
-const CACHE='torshak-v14';
-const FONT_CACHE='torshak-fonts-v14';
-const ASSETS=['./','./index.html','./styles.css','./auth.css','./app.js','./auth.js','./manifest.json','./icon.svg'];
-const FONT_URLS=['https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Lalezar&display=swap'];
-const NETWORK_FIRST=['products.js','version.json','admin.html'];
-self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await Promise.all(ASSETS.map(u=>c.add(u).catch(()=>{})));const fc=await caches.open(FONT_CACHE);for(const url of FONT_URLS){try{const res=await fetch(url,{mode:'cors'});if(!res.ok)continue;await fc.put(url,res.clone());const css=await res.text();const urls=[...css.matchAll(/url\((https:\/\/[^)]+\.(?:woff2?|ttf|otf))\)/g)].map(m=>m[1]);await Promise.all(urls.map(u=>fetch(u,{mode:'cors'}).then(r=>r.ok&&fc.put(u,r)).catch(()=>{})));}catch{}}})());self.skipWaiting();});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE&&k!==FONT_CACHE).map(k=>caches.delete(k)));await self.clients.claim();})());});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=new URL(e.request.url);const isNF=NETWORK_FIRST.some(n=>url.pathname.endsWith('/'+n));if(isNF){e.respondWith((async()=>{try{const res=await fetch(e.request);if(res&&res.status===200){const cache=await caches.open(CACHE);cache.put(e.request,res.clone()).catch(()=>{});}return res;}catch(err){const cached=await caches.match(e.request);return cached||Response.error();}})());return;}const isFont=e.request.url.includes('fonts.googleapis.com')||e.request.url.includes('fonts.gstatic.com')||/\.(woff2?|ttf|otf|eot)(\?|$)/.test(e.request.url);if(isFont){e.respondWith((async()=>{const cache=await caches.open(FONT_CACHE);const cached=await cache.match(e.request);if(cached)return cached;try{const res=await fetch(e.request);if(res&&res.status===200)cache.put(e.request,res.clone());return res;}catch{return cached||Response.error();}})());return;}e.respondWith((async()=>{const cache=await caches.open(CACHE);const cached=await cache.match(e.request);const network=fetch(e.request).then(res=>{if(res&&res.status===200&&res.type==='basic'){cache.put(e.request,res.clone()).catch(()=>{});}return res;}).catch(()=>null);return cached||(await network)||caches.match('./index.html');})());});
+function handleProductHash(){const hash=location.hash;if(!hash||!hash.startsWith('#product-'))return;const id=hash.replace('#product-','');if(!id)return;setTimeout(()=>{const p=PRODUCTS.find(x=>x.id===id);if(p)openProduct(p.id);},500);}
+async function checkForUpdates(){try{const base=getRawBase();const vRes=await fetch(base+'version.json?_='+Date.now(),{cache:'no-store'});if(!vRes.ok)return false;const vData=await vRes.json();const sv=vData.v;const lv=localStorage.getItem('torshak.version');if(sv&&sv!==lv){await loadNewProducts(sv,base);localStorage.setItem('torshak.version',sv);return true;}return false;}catch(e){return false;}}
+async function loadNewProducts(version,base){try{const url=(base||getRawBase())+'products.js?v='+version+'&_='+Date.now();const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('Network');const text=await res.text();const blob=new Blob([text],{type:'application/javascript'});const blobUrl=URL.createObjectURL(blob);await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=blobUrl;s.onload=()=>{URL.revokeObjectURL(blobUrl);resolve();};s.onerror=reject;document.head.appendChild(s);});renderCategories();renderProducts();renderDrawerCats();updateCartBadge();renderFeatured();if(typeof SHOP!=='undefined'){$('headerTagline').textContent=SHOP.tagline;$('shopAddress').textContent=SHOP.address||'بوشهر (فروش مجازی)';if(SHOP.phone){$('shopPhoneDisplay').textContent=fa(SHOP.phone.replace(/^98/,'0').replace(/^0/,'').replace(/(\d{4})(\d{3})(\d{4})/,'$1 $2 $3'));}}showUpdateBanner();}catch(e){console.warn('Load failed:',e);}}
+function showUpdateBanner(){const old=document.getElementById('updateBanner');if(old)old.remove();const banner=document.createElement('div');banner.id='updateBanner';banner.className='update-banner';banner.innerHTML='✨ محصولات جدید اضافه شد';document.body.appendChild(banner);requestAnimationFrame(()=>banner.classList.add('show'));setTimeout(()=>{banner.classList.remove('show');setTimeout(()=>banner.remove(),400);},3000);}
+function startAutoUpdate(){setTimeout(()=>checkForUpdates(),800);if(checkInterval)clearInterval(checkInterval);checkInterval=setInterval(()=>checkForUpdates(),5*60*1000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkForUpdates();});window.addEventListener('online',()=>checkForUpdates());}
+function renderFeatured(){const section=$('featuredSection');const scroll=$('featuredScroll');const count=$('featuredCount');if(!section||!scroll)return;const featured=PRODUCTS.filter(p=>p.featured&&p.inStock!==false);if(!featured.length){section.style.display='none';return;}section.style.display='block';count.textContent=fa(featured.length)+' محصول';scroll.innerHTML='';featured.forEach((p,i)=>{const im=p.img||p.image;const hd=p.oldPrice&&p.oldPrice>p.price;const card=document.createElement('div');card.className='featured-card';card.style.animationDelay=(i*0.05)+'s';card.innerHTML='<div class="fc-img" style="background:'+gradientFor(p.color)+'">'+(im?'<img src="'+im+'" alt="'+p.name+'" loading="lazy">':'<span>'+(p.emoji||'🫙')+'</span>')+'<span class="fc-badge">⭐ ویژه</span></div><div class="fc-info"><div class="fc-name">'+p.name+'</div><div class="fc-price">'+formatPrice(p.price)+'<span>تومان</span>'+(hd?'<span class="fc-old">'+formatPrice(p.oldPrice)+'</span>':'')+'</div></div>';card.addEventListener('click',()=>openProduct(p.id));scroll.appendChild(card);});}
+function showWelcomeIfFirstTime(){try{if(localStorage.getItem('torshak.welcomed'))return;setTimeout(()=>{const t=$('toast');t.innerHTML='<span class="toast-icon">👋</span><span>به '+SHOP.name+' خوش آمدید!</span>';t.classList.add('welcome');clearTimeout(toastTimer);t.classList.remove('show');requestAnimationFrame(()=>{requestAnimationFrame(()=>{t.classList.add('show');toastTimer=setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.classList.remove('welcome'),400);},4000);});});localStorage.setItem('torshak.welcomed','1');},1500);}catch(e){}}
+function shareProduct(p){const url=location.origin+location.pathname+'#product-'+p.id;const text='🌶️ '+p.name+'\n💰 '+formatPrice(p.price)+' تومان\n🛒 از '+SHOP.name+'\n\n'+url;if(navigator.share){navigator.share({title:p.name+' — '+SHOP.name,text:text,url:url}).catch(()=>{});}else{navigator.clipboard.writeText(text).then(()=>{showToast('لینک محصول کپی شد','📋');}).catch(()=>{showToast('متن آماده شد','📋');});}}
+const drawer=$('drawer'),drawerOverlay=$('drawerOverlay');
+function openDrawer(){drawer.classList.add('open');drawerOverlay.classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){drawer.classList.remove('open');drawerOverlay.classList.remove('open');document.body.style.overflow='';}
+function contactRubika(){if(!SHOP.rubika)return;window.open('https://rubika.ir/'+SHOP.rubika,'_blank');}
+function contactBale(){if(!SHOP.bale)return;window.open('https://ble.ir/'+SHOP.bale,'_blank');}
+function contactInstagram(){if(!SHOP.instagram)return;window.open('https://instagram.com/'+SHOP.instagram,'_blank');}
+function contactPhone(){if(!SHOP.phone)return;window.location.href='tel:'+SHOP.phone;}
+function setCategory(id){currentCategory=id;document.querySelectorAll('.cat-pill').forEach(x=>{x.classList.toggle('active',x.dataset.cat===id);});document.querySelectorAll('.drawer-cat').forEach(x=>{x.classList.toggle('active',x.dataset.cat===id);});renderProducts();}
+function renderCategories(){const wrap=$('categories');wrap.innerHTML='';CATEGORIES.forEach(c=>{const btn=document.createElement('button');btn.className='cat-pill'+(c.id==='all'?' active':'');btn.dataset.cat=c.id;btn.innerHTML='<span>'+c.emoji+'</span><span>'+c.name+'</span>';btn.addEventListener('click',()=>setCategory(c.id));wrap.appendChild(btn);});}
+function renderDrawerCats(){const wrap=$('drawerCats');wrap.innerHTML='';CATEGORIES.forEach(c=>{const btn=document.createElement('button');btn.className='drawer-cat'+(c.id===currentCategory?' active':'');btn.dataset.cat=c.id;btn.innerHTML='<span class="drawer-cat-emoji">'+c.emoji+'</span><span>'+c.name+'</span>';btn.addEventListener('click',()=>{setCategory(c.id);closeDrawer();setTimeout(()=>{$('products').scrollIntoView({behavior:'smooth',block:'start'});},350);});wrap.appendChild(btn);});}
+function getFilteredProducts(){let list=currentCategory==='all'?PRODUCTS:PRODUCTS.filter(p=>p.category===currentCategory);if(searchQuery){list=list.filter(p=>{const hay=[p.name||'',p.description||'',p.ingredients||'',p.unit||''].join(' ').toLowerCase();return hay.includes(searchQuery);});}return list;}
+function renderProducts(){const grid=$('productsGrid');const list=getFilteredProducts();grid.innerHTML='';if(!list.length){$('emptyState').style.display='block';$('productsCount').textContent='';$('emptyText').textContent=searchQuery?'محصولی با «'+searchQuery+'» پیدا نشد':'محصولی در این دسته پیدا نشد';return;}$('emptyState').style.display='none';$('productsCount').textContent=fa(list.length)+' محصول';list.forEach((p,i)=>{const card=document.createElement('div');card.className='product-card';card.style.animationDelay=(i*0.04)+'s';const hd=p.oldPrice&&p.oldPrice>p.price;const dp=hd?Math.round((1-p.price/p.oldPrice)*100):0;const out=p.inStock===false;const im=p.img||p.image;card.innerHTML='<div class="product-img" style="background:'+gradientFor(p.color)+'">'+(im?'<img src="'+im+'" alt="'+p.name+'" loading="lazy">':'<span>'+(p.emoji||'🫙')+'</span>')+(hd&&!out?'<span class="discount-badge">'+fa(dp)+'٪</span>':'')+(p.featured?'<span class="product-badge">پیشنهاد ویژه</span>':'')+(out?'<span class="product-badge out">ناموجود</span>':'')+'</div><div class="product-body"><div class="product-name">'+p.name+'</div><div class="product-unit">'+(p.unit||'—')+'</div><div class="product-price-row"><div class="product-prices">'+(hd?'<span class="product-old">'+formatPrice(p.oldPrice)+'</span>':'')+'<span class="product-price">'+formatPrice(p.price)+'<span>تومان</span></span></div><button class="add-btn" '+(out?'disabled':'')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div></div>';card.addEventListener('click',e=>{if(e.target.closest('.add-btn'))return;openProduct(p.id);});const ab=card.querySelector('.add-btn');if(!out){ab.addEventListener('click',e=>{e.stopPropagation();addToCart(p.id,1);bounceBtn(ab);});}grid.appendChild(card);});}
+function gradientFor(color){const c=color||'#b8341e';return 'linear-gradient(135deg, '+c+'22 0%, '+c+'44 100%)';}
+function openProduct(id){const p=PRODUCTS.find(p=>p.id===id);if(!p)return;currentProduct=p;currentQty=1;const hd=p.oldPrice&&p.oldPrice>p.price;const dp=hd?Math.round((1-p.price/p.oldPrice)*100):0;const out=p.inStock===false;const im=p.img||p.image;
+$('productSheetContent').innerHTML='<div class="sheet-handle"></div><div class="product-detail"><div class="detail-img" style="background:'+gradientFor(p.color)+'">'+(im?'<img src="'+im+'" alt="'+p.name+'">':'<span>'+(p.emoji||'🫙')+'</span>')+(hd&&!out?'<span class="detail-discount">'+fa(dp)+'٪ تخفیف</span>':'')+(p.featured?'<span class="detail-badge">⭐ پیشنهاد ویژه</span>':'')+(out?'<span class="detail-badge" style="background:#6b6b6b;color:#fff">ناموجود</span>':'')+'</div><div class="detail-body"><h2 class="detail-name">'+p.name+'</h2><div class="detail-unit">'+(p.unit||'—')+'</div><div class="detail-price-row"><span class="detail-price">'+formatPrice(p.price)+'<span>تومان</span></span>'+(hd?'<span class="detail-old">'+formatPrice(p.oldPrice)+'</span>':'')+'</div>'+(p.description?'<p class="detail-desc">'+p.description+'</p>':'')+(p.ingredients?'<div class="detail-ingredients"><h5>🧂 مواد اولیه</h5><p>'+p.ingredients+'</p></div>':'')+'</div><div class="detail-actions"><div class="qty-control"><button class="qty-btn" id="qtyMinus" '+(out?'disabled':'')+'>−</button><span class="qty-value" id="qtyValue">'+fa(currentQty)+'</span><button class="qty-btn" id="qtyPlus" '+(out?'disabled':'')+'>+</button></div><button class="detail-add" id="detailAdd" '+(out?'disabled':'')+'>'+(out?'ناموجود':'افزودن به سبد')+'</button></div><div class="share-row"><button class="share-btn" id="shareProductBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>اشتراک‌گذاری</button></div></div>';
+if(!out){$('qtyMinus').addEventListener('click',()=>{if(currentQty>1){currentQty--;updateQtyUI();}});$('qtyPlus').addEventListener('click',()=>{if(currentQty<99){currentQty++;updateQtyUI();}});$('detailAdd').addEventListener('click',()=>{addToCart(p.id,currentQty);closeProduct();setTimeout(openCart,250);});}
+const shareBtn=$('shareProductBtn');if(shareBtn){shareBtn.addEventListener('click',()=>shareProduct(p));}
+$('productSheet').classList.add('open');document.body.style.overflow='hidden';}
+function updateQtyUI(){$('qtyValue').textContent=fa(currentQty);$('qtyMinus').disabled=currentQty<=1;}
+function closeProduct(){$('productSheet').classList.remove('open');document.body.style.overflow='';}
+function addToCart(id,qty){cart[id]=(cart[id]||0)+qty;saveCart();updateCartBadge();showToast('به سبد اضافه شد','🌶️');}
+function updateCartBadge(){const count=cartCount();const badge=$('navBadge');const nav=$('navCart');if(count>0){badge.textContent=fa(count);badge.classList.add('show');nav.classList.add('active');setTimeout(()=>nav.classList.remove('active'),600);}else{badge.classList.remove('show');}}
+function openCart(){renderCart();$('cartSheet').classList.add('open');document.body.style.overflow='hidden';}
+function closeCart(){$('cartSheet').classList.remove('open');document.body.style.overflow='';}
+function renderCart(){const body=$('cartBody');const footer=$('cartFooter');const ids=Object.keys(cart).filter(id=>cart[id]>0);if(!ids.length){body.innerHTML='<div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>سبد خرید خالیه</p><small>یه سر به محصولات ما بزن</small></div>';footer.style.display='none';return;}body.innerHTML='';footer.style.display='block';ids.forEach(id=>{const p=PRODUCTS.find(p=>p.id===id);if(!p)return;const qty=cart[id];const im=p.img||p.image;const row=document.createElement('div');row.className='cart-item';row.innerHTML='<div class="cart-item-img" style="background:'+gradientFor(p.color)+'">'+(im?'<img src="'+im+'" alt="">':'<span>'+(p.emoji||'🫙')+'</span>')+'</div><div class="cart-item-info"><div class="cart-item-name">'+p.name+'</div><div class="cart-item-price">'+formatPrice(p.price)+' × '+fa(qty)+'</div></div><div class="cart-item-qty"><button data-act="minus">−</button><span>'+fa(qty)+'</span><button data-act="plus">+</button></div>';row.querySelector('[data-act="minus"]').addEventListener('click',()=>{cart[id]--;if(cart[id]<=0)delete cart[id];saveCart();updateCartBadge();renderCart();});row.querySelector('[data-act="plus"]').addEventListener('click',()=>{cart[id]++;saveCart();updateCartBadge();renderCart();});body.appendChild(row);});$('cartTotal').textContent=formatPrice(cartTotal())+' تومان';}
+function buildOrderMessage(){const ids=Object.keys(cart).filter(id=>cart[id]>0);let msg='🌶️ سفارش جدید از '+SHOP.name+'\n\n📦 محصولات:\n';ids.forEach(id=>{const p=PRODUCTS.find(p=>p.id===id);if(!p)return;const qty=cart[id];msg+='• '+p.name+' × '+fa(qty)+' = '+formatPrice(p.price*qty)+' تومان\n';});msg+='\n💰 جمع کل: '+formatPrice(cartTotal())+' تومان\n\n📍 لطفاً آدرس و نحوه ارسال رو اعلام بفرمایید.';return msg;}
+function checkoutRubika(){const ids=Object.keys(cart).filter(id=>cart[id]>0);if(!ids.length)return;const msg=buildOrderMessage();navigator.clipboard.writeText(msg).then(()=>{showToast('متن سفارش کپی شد — در روبیکا پیست کن','📋');setTimeout(()=>{if(SHOP.rubika)window.open('https://rubika.ir/'+SHOP.rubika,'_blank');},1200);}).catch(()=>{showToast('متن رو کپی کن','📋');});}
+function showToast(text,icon){icon=icon||'✓';const t=$('toast');t.innerHTML='<span class="toast-icon">'+icon+'</span><span>'+text+'</span>';clearTimeout(toastTimer);t.classList.remove('show');requestAnimationFrame(()=>{requestAnimationFrame(()=>{t.classList.add('show');toastTimer=setTimeout(()=>t.classList.remove('show'),2500);});});}
+function bounceBtn(btn){btn.style.transform='scale(1.25)';setTimeout(()=>{btn.style.transform='';},200);}
+document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('click',e=>{const link=e.target.closest('a[href^="#"]');if(!link)return;e.preventDefault();const target=document.querySelector(link.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
 </textarea>
 
 <textarea id="f_index" style="display:none">
@@ -487,7 +221,7 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=n
 <header class="app-header">
   <div class="logo">
     <div class="logo-icon">🌶️</div>
-    <div><h1>کافه ترشی</h1><p id="headerTagline">ترشی و ترشک خانگی بوشهر</p></div>
+    <div><h1>کافه ترشی</h1><p id="headerTagline">ترشی و خیارشور خونگی</p></div>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <button class="user-btn" id="userBtn" aria-label="حساب کاربری">
@@ -503,7 +237,7 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=n
     <div class="hero-content">
       <span class="hero-tag">🌶️ خانگی و اصیل</span>
       <h2>طعم اصیل<br>ترشی بندری</h2>
-      <p>ترشی، خیارشور و لواشک خانگی<br>از قلب بوشهر، برای سفره‌های شما</p>
+      <p>ترشی و خیارشور خونگی<br>با عشق ساخته می‌شود</p>
       <a href="#products" class="hero-cta">مشاهده محصولات ↓</a>
     </div>
     <div class="hero-visual"><span class="hero-jar">🫙</span></div>
@@ -527,28 +261,29 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=n
   </section>
   <section class="shop-info">
     <div class="info-card"><div class="info-icon">📱</div><div><h4>تماس با ما</h4><p id="shopPhoneDisplay">—</p></div></div>
-    <div class="info-card"><div class="info-icon">📍</div><div><h4>آدرس</h4><p id="shopAddress">بوشهر</p></div></div>
-    <div class="info-card"><div class="info-icon">🚚</div><div><h4>ارسال</h4><p>پیک در بوشهر — پست سراسر کشور</p></div></div>
+    <div class="info-card"><div class="info-icon">💬</div><div><h4>روبیکا</h4><p>forosh48@</p></div></div>
+    <div class="info-card"><div class="info-icon">💬</div><div><h4>بله</h4><p>forosh48@</p></div></div>
   </section>
-  <footer class="app-footer"><p>🌶️ کافه ترشی — با عشق از بوشهر</p></footer>
+  <footer class="app-footer"><p>🌶️ کافه ترشی — ترشی و خیارشور خونگی</p></footer>
 </main>
 <nav class="bottom-nav">
   <button class="nav-item" id="navHome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>خانه</span></button>
   <button class="nav-item" id="navCart"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="nav-badge" id="navBadge">۰</span></div><span>سبد</span></button>
-  <button class="nav-item" id="navWhatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>واتساپ</span></button>
-  <button class="nav-item" id="navInstagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>اینستاگرام</span></button>
+  <button class="nav-item" id="navRubika"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.7 1.5 5.1 3.86 6.7-.1.67-.4 1.75-1.13 2.68-.15.2 0 .48.24.43 1.72-.35 3.02-1.16 3.77-1.75.99.26 2.1.4 3.26.4 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg><span>روبیکا</span></button>
+  <button class="nav-item" id="navBale"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><span>بله</span></button>
 </nav>
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-header">
     <div class="logo-icon">🌶️</div>
-    <div class="drawer-brand"><h2>کافه ترشی</h2><p>ترشی و ترشک خانگی بوشهر</p></div>
+    <div class="drawer-brand"><h2>کافه ترشی</h2><p>ترشی و خیارشور خونگی</p></div>
     <button class="icon-close" id="closeDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   </div>
   <div class="drawer-section"><h3 class="drawer-title">دسته‌بندی محصولات</h3><div class="drawer-cats" id="drawerCats"></div></div>
   <div class="drawer-section">
     <h3 class="drawer-title">ارتباط با ما</h3>
-    <button class="drawer-item" id="drawerWhatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>واتساپ</span></button>
+    <button class="drawer-item" id="drawerRubika"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.7 1.5 5.1 3.86 6.7-.1.67-.4 1.75-1.13 2.68-.15.2 0 .48.24.43 1.72-.35 3.02-1.16 3.77-1.75.99.26 2.1.4 3.26.4 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg><span>روبیکا</span></button>
+    <button class="drawer-item" id="drawerBale"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><span>بله</span></button>
     <button class="drawer-item" id="drawerInstagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>اینستاگرام</span></button>
     <button class="drawer-item" id="drawerPhone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>تماس تلفنی</span></button>
   </div>
@@ -557,11 +292,11 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=n
     <div class="drawer-about">
       <div class="about-icon">🌶️</div>
       <p class="about-title"><strong>کافه ترشی</strong></p>
-      <p class="about-text">ترشی، خیارشور و لواشک خانگی اصیل بوشهری، با مواد اولیه تازه و دستور خانوادگی. بدون مواد نگهدارنده، با عشق و سلیقه ساخته می‌شود.</p>
+      <p class="about-text">ترشی و خیارشور خونگی، با مواد اولیه تازه. بدون مواد نگهدارنده، با عشق ساخته می‌شود.</p>
       <div class="about-features"><span>🏠 خانگی</span><span>🌿 طبیعی</span><span>❤️ با عشق</span></div>
     </div>
   </div>
-  <div class="drawer-footer"><p>🌶️ با عشق از بوشهر</p><p class="drawer-version">نسخه ۱.۰</p></div>
+  <div class="drawer-footer"><p>🌶️ کافه ترشی</p><p class="drawer-version">نسخه ۱.۰</p></div>
 </aside>
 <div class="sheet-overlay" id="productSheet"><div class="sheet" id="productSheetContent"></div></div>
 <div class="sheet-overlay" id="cartSheet">
@@ -571,13 +306,9 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=n
     <div class="cart-body" id="cartBody"></div>
     <div class="cart-footer" id="cartFooter">
       <div class="cart-total-row"><span>جمع کل:</span><strong id="cartTotal">۰ تومان</strong></div>
-      <button class="checkout-alt" id="checkoutApiBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        ثبت سفارش در سیستم
-      </button>
       <button class="checkout-btn" id="checkoutBtn">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        ثبت سفارش در واتساپ
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.7 1.5 5.1 3.86 6.7-.1.67-.4 1.75-1.13 2.68-.15.2 0 .48.24.43 1.72-.35 3.02-1.16 3.77-1.75.99.26 2.1.4 3.26.4 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+        ارسال سفارش در روبیکا
       </button>
     </div>
   </div>
@@ -604,6 +335,17 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=n
 </html>
 </textarea>
 
+<textarea id="f_sw" style="display:none">
+const CACHE='torshak-v15';
+const FONT_CACHE='torshak-fonts-v15';
+const ASSETS=['./','./index.html','./styles.css','./auth.css','./app.js','./auth.js','./manifest.json','./icon.svg'];
+const FONT_URLS=['https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Lalezar&display=swap'];
+const NETWORK_FIRST=['products.js','version.json','admin.html'];
+self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await Promise.all(ASSETS.map(u=>c.add(u).catch(()=>{})));const fc=await caches.open(FONT_CACHE);for(const url of FONT_URLS){try{const res=await fetch(url,{mode:'cors'});if(!res.ok)continue;await fc.put(url,res.clone());const css=await res.text();const urls=[...css.matchAll(/url\((https:\/\/[^)]+\.(?:woff2?|ttf|otf))\)/g)].map(m=>m[1]);await Promise.all(urls.map(u=>fetch(u,{mode:'cors'}).then(r=>r.ok&&fc.put(u,r)).catch(()=>{})));}catch{}}})());self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE&&k!==FONT_CACHE).map(k=>caches.delete(k)));await self.clients.claim();})());});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=new URL(e.request.url);const isNF=NETWORK_FIRST.some(n=>url.pathname.endsWith('/'+n));if(isNF){e.respondWith((async()=>{try{const res=await fetch(e.request);if(res&&res.status===200){const cache=await caches.open(CACHE);cache.put(e.request,res.clone()).catch(()=>{});}return res;}catch(err){const cached=await caches.match(e.request);return cached||Response.error();}})());return;}const isFont=e.request.url.includes('fonts.googleapis.com')||e.request.url.includes('fonts.gstatic.com')||/\.(woff2?|ttf|otf|eot)(\?|$)/.test(e.request.url);if(isFont){e.respondWith((async()=>{const cache=await caches.open(FONT_CACHE);const cached=await cache.match(e.request);if(cached)return cached;try{const res=await fetch(e.request);if(res&&res.status===200)cache.put(e.request,res.clone());return res;}catch{return cached||Response.error();}})());return;}e.respondWith((async()=>{const cache=await caches.open(CACHE);const cached=await cache.match(e.request);const network=fetch(e.request).then(res=>{if(res&&res.status===200&&res.type==='basic'){cache.put(e.request,res.clone()).catch(()=>{});}return res;}).catch(()=>null);return cached||(await network)||caches.match('./index.html');})());});
+</textarea>
+
 <script>
 const $ = id => document.getElementById(id);
 function log(text, status){const box=$('log');box.classList.add('show');const line=document.createElement('div');line.className='line';line.innerHTML=status?'<span class="'+status+'">'+text+'</span>':text;box.appendChild(line);box.scrollTop=box.scrollHeight;}
@@ -622,9 +364,9 @@ $('go').onclick=async()=>{
   const owner=$('owner').value.trim();const repo=$('repo').value.trim()||'Torshak';const token=$('token').value.trim();
   if(!owner||!token){alert('نام کاربری و توکن لازم است!');return;}
   $('go').disabled=true;$('go').textContent='⏳ در حال آپدیت...';
-  const files=[{name:'index.html',el:'f_index'},{name:'auth.css',el:'f_authcss'},{name:'auth.js',el:'f_authjs'},{name:'sw.js',el:'f_sw'}];
+  const files=[{name:'index.html',el:'f_index'},{name:'app.js',el:'f_app'},{name:'products.js',el:'f_products'},{name:'sw.js',el:'f_sw'}];
   let ok=0;
-  for(let i=0;i<files.length;i++){const f=files[i];try{log('⏳ آپلود '+f.name+'...','pending');const content=$(f.el).value.trim();await ghPutFile(owner,repo,token,f.name,content,'آپدیت '+f.name+' از setup');log('✅ '+f.name+' آپلود شد','ok');ok++;}catch(err){log('❌ '+f.name+': '+err.message,'err');}}
+  for(let i=0;i<files.length;i++){const f=files[i];try{log('⏳ آپلود '+f.name+'...','pending');const content=$(f.el).value.trim();await ghPutFile(owner,repo,token,f.name,content,'آپدیت '+f.name+' — روبیکا و بله');log('✅ '+f.name+' آپلود شد','ok');ok++;}catch(err){log('❌ '+f.name+': '+err.message,'err');}}
   if(ok===files.length){$('form').style.display='none';$('done').classList.add('show');log('\n🎉 همه فایل‌ها آپلود شد!','ok');}
   else{$('go').disabled=false;$('go').textContent='🔁 تلاش مجدد';}
 };
