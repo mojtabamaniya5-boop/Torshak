@@ -1,6 +1,6 @@
-const CACHE='torshak-v13';
-const FONT_CACHE='torshak-fonts-v13';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.json','./icon.svg'];
+const CACHE='torshak-v14';
+const FONT_CACHE='torshak-fonts-v14';
+const ASSETS=['./','./index.html','./styles.css','./auth.css','./app.js','./auth.js','./manifest.json','./icon.svg'];
 const FONT_URLS=['https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Lalezar&display=swap'];
 const NETWORK_FIRST=['products.js','version.json','admin.html'];
 self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await Promise.all(ASSETS.map(u=>c.add(u).catch(()=>{})));const fc=await caches.open(FONT_CACHE);for(const url of FONT_URLS){try{const res=await fetch(url,{mode:'cors'});if(!res.ok)continue;await fc.put(url,res.clone());const css=await res.text();const urls=[...css.matchAll(/url\((https:\/\/[^)]+\.(?:woff2?|ttf|otf))\)/g)].map(m=>m[1]);await Promise.all(urls.map(u=>fetch(u,{mode:'cors'}).then(r=>r.ok&&fc.put(u,r)).catch(()=>{})));}catch{}}})());self.skipWaiting();});
