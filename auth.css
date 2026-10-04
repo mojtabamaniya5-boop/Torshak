@@ -1,0 +1,55 @@
+/* پنل مشتری و ثبت‌نام */
+.user-btn{width:44px;height:44px;flex-shrink:0;border-radius:13px;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;color:var(--primary-dark);box-shadow:var(--shadow-sm);position:relative}
+.user-btn svg{width:22px;height:22px}
+.user-btn.logged{background:linear-gradient(135deg,#4a7c59,#2e7d32);color:#fff;border-color:transparent}
+.user-btn .dot{position:absolute;top:-2px;left:-2px;width:12px;height:12px;border-radius:50%;background:#16a34a;border:2px solid var(--bg);display:none}
+.user-btn.logged .dot{display:block}
+
+.auth-tabs{display:flex;gap:6px;padding:6px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:6px 20px 14px}
+.auth-tab{flex:1;padding:10px;background:transparent;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text-soft);cursor:pointer}
+.auth-tab.active{background:var(--primary);color:#fff}
+.auth-form{padding:0 20px 20px}
+.auth-form .f{margin-bottom:12px}
+.auth-form label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.auth-form input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;background:var(--bg);outline:none;direction:ltr;text-align:left}
+.auth-form input:focus{border-color:var(--primary);background:#fff}
+.auth-form button{width:100%;padding:14px;border:none;border-radius:13px;background:var(--primary);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px}
+.auth-form button:disabled{opacity:.5}
+.auth-form .err{background:#fdecec;color:#dc2626;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.7;margin-bottom:10px;display:none}
+.auth-form .err.show{display:block}
+.auth-form .swap{text-align:center;font-size:12.5px;color:var(--text-soft);margin-top:14px}
+.auth-form .swap a{color:var(--primary);font-weight:700;cursor:pointer;text-decoration:underline}
+
+.profile{padding:0 0 20px}
+.profile-head{padding:18px 20px;text-align:center;border-bottom:1px dashed var(--border);margin-bottom:14px}
+.profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#4a7c59,#2e7d32);display:grid;place-items:center;color:#fff;font-size:28px;font-weight:700;margin:0 auto 10px;box-shadow:0 8px 20px -6px rgba(46,125,50,.5)}
+.profile-name{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:20px;color:var(--primary-dark);margin-bottom:4px}
+.profile-phone{font-size:13px;color:var(--text-soft);direction:ltr}
+.profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:16px}
+.profile-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+.profile-stat .num{font-family:'Lalezar',sans-serif;font-size:22px;color:var(--primary);display:block;margin-bottom:4px}
+.profile-stat .lbl{font-size:11px;color:var(--text-soft)}
+.profile-actions{padding:0 20px;display:flex;flex-direction:column;gap:8px}
+.paction-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;text-align:right}
+.paction-btn svg{width:20px;height:20px;color:var(--primary);flex-shrink:0}
+.paction-btn.logout{color:#dc2626;border-color:#fecaca;background:#fef2f2}
+.paction-btn.logout svg{color:#dc2626}
+
+.orders-list{padding:14px 20px}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.order-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--border)}
+.order-id{font-size:12px;color:var(--text-soft);font-weight:600}
+.order-date{font-size:11px;color:var(--text-soft)}
+.order-status{padding:3px 10px;border-radius:99px;font-size:10.5px;font-weight:700}
+.order-status.pending{background:#fef3c7;color:#92400e}
+.order-status.confirmed{background:#dbeafe;color:#1e40af}
+.order-status.sent{background:#e0e7ff;color:#3730a3}
+.order-status.delivered{background:#d1fae5;color:#065f46}
+.order-items{font-size:12.5px;line-height:1.9;color:var(--text);margin-bottom:8px}
+.order-total{font-size:14px;font-weight:800;color:var(--primary-dark);text-align:left}
+.orders-empty{text-align:center;padding:40px 20px;color:var(--text-soft)}
+.orders-empty-icon{font-size:52px;opacity:.5;margin-bottom:12px}
+
+.checkout-alt{width:100%;height:50px;border-radius:14px;border:1.5px solid var(--primary);background:#fff;color:var(--primary);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.checkout-alt svg{width:20px;height:20px}
+.checkout-alt:disabled{opacity:.5}
